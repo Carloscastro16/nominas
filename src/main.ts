@@ -10,10 +10,14 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+// Import the functions you need from the SDKs you need
 
 const vuetify = createVuetify({
   components,
   directives,
+  theme: {
+    defaultTheme: 'light'
+  }
 })
 
 const app = createApp(App)

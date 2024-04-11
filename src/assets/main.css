@@ -329,3 +329,7 @@ template {
 [hidden] {
   display: none;
 }
+
+.input-container{
+  width: 100%;
+}
