@@ -1,50 +1,54 @@
-
 <script lang="ts" setup>
-  import { ref } from 'vue';
-  
-  let search = ref('');
+import { ref } from 'vue';
 
-  const headers = [
-    { title: 'Nombre Completo', key: 'fullname' },
-    { title: 'Puesto', key: 'range' },
-    { title: 'Departamento', key: 'department' },
-    { title: 'Correo', key: 'email' },
-    { title: 'Actions', key: 'actions', sortable: false },
-  ]
-  const employees = [
-    {
-      fullname: 'Spinach',
-      range: 'Ingeniero',
-      department: 'Contruccion',
-      email: 'spinach@nomimas.com',
-      actions: 'Acciones',
-    },
-    {
-      fullname: 'Spinach',
-      range: 'Ingeniero',
-      department: 'Contruccion',
-      email: 'spinach@nomimas.com',
-      actions: 'Acciones',
-    },
-    {
-      fullname: 'Spinach',
-      range: 'Programador',
-      department: 'Contruccion',
-      email: 'spinach@nomimas.com',
-      actions: 'Acciones',
-    },
-  ]
-  function getColor(range: any){
-    if (range == 'Ingeniero') return 'red'
-    else if (range == 'Programador') return 'orange'
-    else return 'green'
+let search = ref('');
+
+const headers = [
+  { title: 'Puesto', key: 'puesto' },
+  { title: 'No. Nómina', key: 'nomina' },
+  { title: 'Periodo del', key: 'periodo' },
+  { title: 'Días trabajados', key: 'dias' },
+  { title: 'Faltas', key: 'faltas' },
+  { title: 'Acciones', key: 'actions', sortable: false },
+]
+const employees = [
+  {
+    "puesto": "SISTEMAS",
+    "nomina": "5",
+    "periodo": "01/mar./2024 al 15/mar./2024",
+    "dias": "15.25",
+    "faltas": "0",
+    "actions": "Acciones"
+  },
+  {
+    "puesto": "SISTEMAS",
+    "nomina": "5",
+    "periodo": "01/mar./2024 al 15/mar./2024",
+    "dias": "15.25",
+    "faltas": "0",
+    "actions": "Acciones"
+  },
+  {
+    "puesto": "SISTEMAS",
+    "nomina": "5",
+    "periodo": "01/mar./2024 al 15/mar./2024",
+    "dias": "15.25",
+    "faltas": "0",
+    "actions": "Acciones"
   }
-  function editItem(item: any){
-    return item
-  }
-  function deleteItem(item: any){
-    return item
-  }
+]
+
+function getColor(range: any) {
+  if (range == 'Ingeniero') return 'red'
+  else if (range == 'Programador') return 'orange'
+  else return 'green'
+}
+function editItem(item: any) {
+  return item
+}
+function deleteItem(item: any) {
+  return item
+}
 
 </script>
 
@@ -63,11 +67,7 @@
         </div>
       </div>
       <div class="table-container">
-        <v-data-table 
-          class="table" 
-          :headers="headers"
-          :search="search" 
-          :items="employees">
+        <v-data-table class="table" :headers="headers" :search="search" :items="employees">
           <template v-slot:item.range="{ value }">
             <v-chip :color="getColor(value)">
               {{ value }}
@@ -90,6 +90,4 @@
 </template>
 
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>
