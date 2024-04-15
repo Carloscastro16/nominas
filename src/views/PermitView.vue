@@ -1,58 +1,94 @@
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+
 const router = useRouter()
 
 function redirectTo(query: string){
   router.push(query)
 }
+  
+  let search = ref('');
+
+  const headers = [
+    { title: 'Nombre Completo', key: 'fullname' },
+    { title: 'Puesto', key: 'range' },
+    { title: 'Departamento', key: 'department' },
+    { title: 'Correo', key: 'email' },
+    { title: 'Actions', key: 'actions', sortable: false },
+  ]
+  const employees = [
+  {
+    "fullname": "Juan Pérez",
+    "range": "Ingeniero",
+    "department": "Construcción",
+    "email": "juan.perez@example.com",
+    "actions": "Acciones"
+  },
+  {
+    "fullname": "María García",
+    "range": "Diseñador",
+    "department": "Marketing",
+    "email": "maria.garcia@example.com",
+    "actions": "Acciones"
+  },
+  {
+    "fullname": "Carlos Martínez",
+    "range": "Programador",
+    "department": "Tecnología",
+    "email": "carlos.martinez@example.com",
+    "actions": "Acciones"
+  }
+  ]
+  function getColor(range: any){
+    if (range == 'Ingeniero') return 'red'
+    else if (range == 'Programador') return 'orange'
+    else return 'green'
+  }
+  function editItem(item: any){
+    return item
+  }
+  function deleteItem(item: any){
+    return item
+  }
+
 </script>
 <template>
-  <div class="container">
-    <div class="cards-list">
-      <div class="card" @click="redirectTo('/permits/vacations')">
-        <div class="card-banner">
-          <img src="../assets/images/vacations.webp" alt="">
+  <div class="main">
+    <div class="container">
+      <div class="header">
+        <div class="search-container">
+          <ion-icon name="search-outline"></ion-icon>
+          <input type="text" v-model="search" placeholder="Search">
         </div>
-        <div class="card-info">
-          <div class="card-title">
-            Solicitud de Vacaciones
-          </div>
-          <div class="action">
-            <router-link to="/permits/vacations">
-              <ion-icon name="chevron-forward-outline"></ion-icon>
-            </router-link>
-          </div>
+        <div class="add-btn">
+          <button>
+            <ion-icon name="add-outline"></ion-icon>
+          </button>
         </div>
       </div>
-      <div class="card" @click="redirectTo('/permits/urgent-request')">
-        <div class="card-banner">
-          <img src="../assets/images/urgent.webp" alt="">
-        </div>
-        <div class="card-info">
-          <div class="card-title">
-            Solicitud de Permiso urgente
-          </div>
-          <div class="action">
-            <router-link to="/permits/urgent-request">
-              <ion-icon name="chevron-forward-outline"></ion-icon>
-            </router-link>
-          </div>
-        </div>
-      </div>
-      <div class="card" @click="redirectTo('/permits/permit-request')">
-        <div class="card-banner">
-          <img src="../assets/images/permits.webp" alt="">
-        </div>
-        <div class="card-info">
-          <div class="card-title">
-            Solicitud de Permiso
-          </div>
-          <div class="action">
-            <router-link to="/permits/permit-request">
-                <ion-icon name="chevron-forward-outline"></ion-icon>
-            </router-link>
-          </div>
-        </div>
+      <div class="table-container">
+        <v-data-table 
+          class="table" 
+          :headers="headers"
+          :search="search" 
+          :items="employees">
+          <template v-slot:item.range="{ value }">
+            <v-chip :color="getColor(value)">
+              {{ value }}
+            </v-chip>
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <div class="actions">
+              <button class="btn-edit" click="editItem(item)">
+                <ion-icon name="pencil-outline"></ion-icon>
+              </button>
+              <button class="btn-delete" @click="deleteItem(item)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </button>
+            </div>
+          </template>
+        </v-data-table>
       </div>
     </div>
   </div>
