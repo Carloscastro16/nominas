@@ -3,7 +3,7 @@ import { ref, type Ref } from 'vue'
 import { useField, useForm } from 'vee-validate'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
-
+import Swal from 'sweetalert2'
 //Importacion de datos
 import { ranges, departments } from '@/data/employeesData'
 
@@ -31,6 +31,12 @@ function submit(){
         date: dateSelect.value,
         errors: []
     }
+    Swal.fire({
+        title: 'Error!',
+        text: 'Do you want to continue',
+        icon: 'error',
+        confirmButtonText: 'Cool'
+    })
     console.log(form);
 }
 function checkForm(){
