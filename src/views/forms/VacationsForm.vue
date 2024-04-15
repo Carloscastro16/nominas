@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, type Ref } from 'vue'
-import { useField, useForm } from 'vee-validate'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import Swal from 'sweetalert2'
@@ -14,6 +13,7 @@ const departmentSelect: Ref<string | undefined> = ref()
 const motive: Ref<string | undefined> = ref()
 let form = {
     id: employeeId.value,
+    type: 'Vacations',
     range: rangeSelect.value,
     department: departmentSelect.value,
     motive: motive.value,
@@ -25,6 +25,7 @@ function submit(){
     console.log('Form values')
     form = {
         id: employeeId.value,
+        type: 'Vacations',
         range: rangeSelect.value,
         department: departmentSelect.value,
         motive: motive.value,
