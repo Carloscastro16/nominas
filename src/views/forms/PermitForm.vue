@@ -4,7 +4,6 @@ import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import Swal from 'sweetalert2'
 //Importacion de datos
-import { ranges, departments } from '@/data/employeesData'
 import type { Permit } from '@/interfaces/permits'
 
 const dateSelect: Ref<string | undefined> = ref()
