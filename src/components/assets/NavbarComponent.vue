@@ -1,13 +1,23 @@
 <script setup lang="ts">
+import { Logout } from '@/services/FirestoreFunctions'; 
+import type { Ref } from 'vue'
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const logout = async () => {
+  await Logout(router);
+  
+  }
 </script>
+
 <template>
     <nav>
         <div class="title">
             <slot name="title"></slot>
         </div>
         <div class="logout-btn">
-            <button>Log Out</button>
+            <button @click="logout">Log Out</button>
         </div>
+        
     </nav>
 </template>
 

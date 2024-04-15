@@ -1,11 +1,17 @@
 import { collection, doc, setDoc, getDoc, getDocs } from "firebase/firestore"; 
+import { getAuth, signInWithEmailAndPassword,signOut} from 'firebase/auth';
+import { auth } from '@/services/firebaseInit';
+import { ref } from 'vue';
+import type { Router } from 'vue-router';
 
 // used for the firestore refs
 import { db } from '@/services/firebaseInit'
+import HomeView from "@/views/HomeView.vue";
 const permitsRef = collection(db, "permits");
 const vacationsRef = collection(db, "vacations");
 const settingsRef = collection(db, "settings");
 const employeesRef = collection(db, "employees");
+const error = ref(null);
 
 // --- Employee Functions 
 export async function setEmployeeInfo(formValue: any){
@@ -194,5 +200,29 @@ export async function getSettingsByUser(id: any){
     } catch (error) {
         console.error(error);
         return
+    }
+}
+
+
+export async function Login(email: string , password: string, router: Router){
+    error.value = null;
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    console.log('Inicio de sesión exitoso:', userCredential.user);
+    router.push('/');
+
+  } catch (err) {
+    console.error('Error al iniciar sesión:', err);
+  }
+
+}
+
+export async function Logout(router: Router){
+    error.value = null;
+    try {
+      await signOut(auth);
+      router.push('/login');
+    } catch (err) {
+      console.error('Error al cerrar sesión:', err);
     }
 }

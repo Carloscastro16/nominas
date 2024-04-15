@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useField, useForm } from 'vee-validate'
+import { Login } from '@/services/FirestoreFunctions'; 
+import type { Ref } from 'vue'
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
+const password: Ref<string> = useField('password').value as Ref<string>;
+const email: Ref<string> = useField('email').value as Ref<string>;
 const { handleSubmit } = useForm({
   validationSchema: {
     password(value: any) {
@@ -16,12 +22,15 @@ const { handleSubmit } = useForm({
     }
   }
 })
-const password = useField('password')
-const email = useField('email')
-
 const submit = handleSubmit((values) => {
   alert(JSON.stringify(values, null, 2))
 })
+const Enviar = async () => {
+  await Login(email.value, password.value,router);
+  
+
+  }
+
 </script>
 <template>
   <div class="login-container">
@@ -35,20 +44,18 @@ const submit = handleSubmit((values) => {
         <div class="form-container">
           <form @submit.prevent="submit">
             <v-text-field
-              v-model="email.value.value"
-              :error-messages="email.errorMessage.value"
+              v-model="email"
               label="E-mail"
               class="input-container font-weight-bold"
             ></v-text-field>
 
             <v-text-field
-              v-model="password.value.value"
+              v-model="password"
               :counter="10"
-              :error-messages="password.errorMessage.value"
               label="Password"
               class="input-container font-weight-bold"
             ></v-text-field>
-            <v-btn class="me-4 px-8 text-white submit-pill" type="submit" rounded="pill">
+            <v-btn class="me-4 px-8 text-white submit-pill" @click="Enviar" type="submit" rounded="pill">
               submit
             </v-btn>
           </form>

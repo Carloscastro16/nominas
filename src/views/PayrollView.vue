@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-
 let search = ref('');
-
 const headers = [
   { title: 'Puesto', key: 'puesto' },
   { title: 'No. Nómina', key: 'nomina' },

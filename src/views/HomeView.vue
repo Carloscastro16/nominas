@@ -9,6 +9,7 @@ getAllPermits()
 <template>
   <div class="container">
     <TheWelcome />
+    <h1>jkdasdk</h1>
   </div>
 </template>
 <style lang="scss">
