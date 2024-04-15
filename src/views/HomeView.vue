@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import TheWelcome from '../components/TheWelcome.vue'
-import { getCities, setCities } from '@/services/FirestoreFunctions'
-import NavbarComponent from '@/components/assets/NavbarComponent.vue';
-getCities();
+import { getAllPermits } from '@/services/FirestoreFunctions'
+
+getAllPermits()
+
 </script>
 
 <template>
