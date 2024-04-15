@@ -2,14 +2,14 @@
 import { ref } from 'vue'
 import { useField, useForm } from 'vee-validate'
 
-const { handleSubmit, handleReset } = useForm({
+const { handleSubmit } = useForm({
   validationSchema: {
-    password(value) {
+    password(value: any) {
       if (value?.length >= 8) return true
 
       return 'password needs to be at least 8 characters.'
     },
-    email(value) {
+    email(value: any) {
       if (/^[a-z.-]+@[a-z.-]+\.[a-z]+$/i.test(value)) return true
 
       return 'Must be a valid e-mail.'

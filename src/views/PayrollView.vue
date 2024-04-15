@@ -1,8 +1,9 @@
 
 <script lang="ts" setup>
-  import NavbarComponent from '@/components/assets/NavbarComponent.vue';
-import { ref } from 'vue';
-  let search = ref('')
+  import { ref } from 'vue';
+  
+  let search = ref('');
+
   const headers = [
     { title: 'Nombre Completo', key: 'fullname' },
     { title: 'Puesto', key: 'range' },
