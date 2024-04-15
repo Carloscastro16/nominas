@@ -4,7 +4,9 @@
     width: 100%;
     margin-top: 2.5rem;
 }
-
+:root{
+    --primary-color: #ff735c;
+}
 .container {
     .header {
         display: flex;

@@ -6,6 +6,7 @@ import PayrollView from '@/views/PayrollView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import PermitView from '@/views/PermitView.vue'
 import VacationsFormView from '@/views/forms/VacationsForm.vue'
+import PermitFormView from '@/views/forms/PermitForm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +45,16 @@ const router = createRouter({
       path: '/permits/vacations',
       name: 'vacations',
       component: VacationsFormView
+    },
+    {
+      path: '/permits/permit-request',
+      name: 'permit-request',
+      component: PermitFormView
+    },
+    {
+      path: '/permits/urgent-request',
+      name: 'urgent-request',
+      component: PermitFormView
     },
   ]
 })
