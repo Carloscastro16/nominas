@@ -1,8 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import AboutView from '../views/AboutView.vue'
-
-
+import HomeView from '@/views/HomeView.vue'
+import LoginView from '@/views/LoginView.vue'
+import EmployeesView from '@/views/EmployeesView.vue'
+import PayrollView from '@/views/PayrollView.vue'
+import SettingsView from '@/views/SettingsView.vue'
+import PermitView from '@/views/PermitView.vue'
+import VacationsFormView from '@/views/forms/VacationsForm.vue'
+import PermitFormView from '@/views/forms/PermitForm.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,18 +17,45 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/AboutView',
-      name: 'AboutView',
-      component: AboutView
+      path: '/login',
+      name: 'login',
+      component: LoginView
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }
+      path: '/employees',
+      name: 'employees',
+      component: EmployeesView
+    },
+    {
+      path: '/payroll',
+      name: 'payroll',
+      component: PayrollView
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: SettingsView
+    },
+    {
+      path: '/permits',
+      name: 'permits',
+      component: PermitView
+    },
+    {
+      path: '/permits/vacations',
+      name: 'vacations',
+      component: VacationsFormView
+    },
+    {
+      path: '/permits/permit-request',
+      name: 'permit-request',
+      component: PermitFormView
+    },
+    {
+      path: '/permits/urgent-request',
+      name: 'urgent-request',
+      component: PermitFormView
+    },
   ]
 })
 

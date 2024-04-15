@@ -1,0 +1,84 @@
+.container {
+    padding-inline: 2.3rem;
+    background: none;
+    width: 100%;
+    margin-top: 2.5rem;
+}
+:root{
+    --primary-color: #ff735c;
+}
+.container {
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 1rem;
+
+        .add-btn {
+            height: 100%;
+
+            button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #ff735c;
+                color: #fff;
+                height: 100%;
+                padding: 0.8rem;
+                border-radius: 1rem;
+
+                ion-icon {
+                    font-size: 1.3rem;
+                }
+            }
+        }
+    }
+
+    .search-container {
+        width: 100%;
+        background-color: #fff;
+        border-radius: 1rem;
+        border: none;
+        padding: 0.4rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        input {
+            padding: 0.4rem 0.6rem;
+            width: 100%;
+
+            &:focus-visible {
+                outline: none;
+            }
+        }
+    }
+
+    .table-container {
+        margin-top: 2rem;
+        padding: 1rem;
+        background-color: #fff;
+        border-radius: 1rem;
+
+        .table {
+            width: 100%;
+        }
+    }
+
+    .actions {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        gap: 0.4rem;
+        justify-content: center;
+
+        .btn-delete {
+            border: none;
+        }
+    }
+
+    v-icon {
+        color: #000;
+    }
+}
