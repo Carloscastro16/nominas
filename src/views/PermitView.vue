@@ -1,12 +1,6 @@
 <script lang="ts" setup>
-import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 
-const router = useRouter()
-
-function redirectTo(query: string){
-  router.push(query)
-}
   
   let search = ref('');
 

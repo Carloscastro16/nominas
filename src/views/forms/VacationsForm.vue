@@ -5,32 +5,27 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import Swal from 'sweetalert2'
 //Importacion de datos
 import { ranges, departments } from '@/data/employeesData'
+import type { Permit } from '@/interfaces/permits'
 
 const dateSelect: Ref<string | undefined> = ref()
 const employeeId: Ref<string | undefined> = ref()
 const rangeSelect: Ref<string | undefined> = ref()
 const departmentSelect: Ref<string | undefined> = ref()
 const motive: Ref<string | undefined> = ref()
-let form = {
-    id: employeeId.value,
+let form: Ref<Permit> = ref({
+    employeeId: employeeId.value!,
     type: 'Vacations',
-    range: rangeSelect.value,
-    department: departmentSelect.value,
-    motive: motive.value,
-    date: dateSelect.value,
-    errors: []
-}
+    motive: motive.value!,
+    date: dateSelect.value!
+})
 
 function submit(){
     console.log('Form values')
-    form = {
-        id: employeeId.value,
+    form.value = {
+        employeeId: employeeId.value!,
         type: 'Vacations',
-        range: rangeSelect.value,
-        department: departmentSelect.value,
-        motive: motive.value,
-        date: dateSelect.value,
-        errors: []
+        motive: motive.value!,
+        date: dateSelect.value!
     }
     Swal.fire({
         title: 'Error!',
@@ -65,38 +60,6 @@ function checkForm(){
                         single-line
                         variant="outlined"
                     ></v-text-field>
-                </div>
-                <div class="employee-data">
-                    <div class="input-container">
-                        <div class="title">
-                            Puesto
-                        </div>
-                        <v-select
-                            clearable
-                            v-model="rangeSelect"
-                            :items="ranges"
-                            item-title="Puesto"
-                            label="Puesto"
-                            return-object
-                            single-line
-                            variant="outlined"
-                        ></v-select>
-                    </div>
-                    <div class="input-container">
-                        <div class="title">
-                            Departamento
-                        </div>
-                        <v-select
-                            clearable
-                            v-model="departmentSelect"
-                            :items="departments"
-                            item-title="Departamento"
-                            label="Departamento"
-                            return-object
-                            single-line
-                            variant="outlined"
-                        ></v-select>
-                    </div>
                 </div>
                 <div class="input-container">
                     <div class="title">

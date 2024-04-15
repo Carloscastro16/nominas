@@ -1,7 +1,8 @@
 
 <script lang="ts" setup>
   import NavbarComponent from '@/components/assets/NavbarComponent.vue';
-import { ref } from 'vue';
+  import { ref } from 'vue';
+  import EmployeesForm from './forms/EmployeesForm.vue';
   let search = ref('')
   const headers = [
     { title: 'Nombre Completo', key: 'fullname' },
@@ -33,6 +34,7 @@ import { ref } from 'vue';
       actions: 'Acciones',
     },
   ]
+  let dialog = ref(false);
   function getColor(range: any){
     if (range == 'Ingeniero') return 'red'
     else if (range == 'Programador') return 'orange'
@@ -43,6 +45,9 @@ import { ref } from 'vue';
   }
   function deleteItem(item: any){
     return item
+  }
+  function closeDialog(){
+    dialog.value = false
   }
 
 </script>
@@ -56,9 +61,21 @@ import { ref } from 'vue';
           <input type="text" v-model="search" placeholder="Search">
         </div>
         <div class="add-btn">
-          <button>
-            <ion-icon name="add-outline"></ion-icon>
-          </button>
+          <v-dialog
+            v-model="dialog"
+            max-width="80%"
+            max-height="80vh"
+            scrollable
+          >
+            <template v-slot:activator="{ props: activatorProps }">
+              <button>
+                <ion-icon name="add-outline" v-bind="activatorProps"></ion-icon>
+              </button>
+            </template>
+            <EmployeesForm @closeDialog="closeDialog()">
+            </EmployeesForm>
+          </v-dialog>
+          
         </div>
       </div>
       <div class="table-container">
@@ -67,11 +84,6 @@ import { ref } from 'vue';
           :headers="headers"
           :search="search" 
           :items="employees">
-          <template v-slot:item.range="{ value }">
-            <v-chip :color="getColor(value)">
-              {{ value }}
-            </v-chip>
-          </template>
           <template v-slot:item.actions="{ item }">
             <div class="actions">
               <button class="btn-edit" click="editItem(item)">

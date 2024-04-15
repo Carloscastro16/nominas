@@ -66,11 +66,6 @@ function deleteItem(item: any) {
       </div>
       <div class="table-container">
         <v-data-table class="table" :headers="headers" :search="search" :items="employees">
-          <template v-slot:item.range="{ value }">
-            <v-chip :color="getColor(value)">
-              {{ value }}
-            </v-chip>
-          </template>
           <template v-slot:item.actions="{ item }">
             <div class="actions">
               <button class="btn-edit" click="editItem(item)">
