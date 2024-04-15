@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import TheWelcome from '../components/TheWelcome.vue'
 import { getCities, setCities } from '@/services/FirestoreFunctions'
-
+import NavbarComponent from '@/components/assets/NavbarComponent.vue';
 getCities();
 </script>
 
 <template>
-  <main>
+  <div class="container">
     <TheWelcome />
-  </main>
+  </div>
 </template>
+<style lang="scss">
+    
+</style>
