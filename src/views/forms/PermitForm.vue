@@ -44,7 +44,7 @@ async function submit() {
     Swal.fire({
       title: 'Exito!',
       text: 'Tu solicitud de guardo correctamente',
-      icon: 'sucess',
+      icon: 'success',
       confirmButtonText: 'Ok'
     })
     return response

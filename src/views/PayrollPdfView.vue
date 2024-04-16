@@ -6,7 +6,7 @@ import { getEmployeeByRfc } from '@/services/FirestoreFunctions'
 import html2pdf from "html2pdf.js";
 
 const route = useRoute()
-let payroll = ref({})
+let payroll = ref()
 let payrolls = ref()
 let employeeData = ref()
 //Importacion de datos

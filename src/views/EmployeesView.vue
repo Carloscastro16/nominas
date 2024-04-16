@@ -113,7 +113,10 @@ async function reloadData(event: any){
         >
           <template v-slot:item.actions="{ item }">
             <div class="actions">
-              <button class="btn-edit" @click="editItem(item.id)">
+              <button class="btn-edit" click="editItem(item)">
+                <ion-icon name="eye-outline"></ion-icon>
+              </button>
+              <button class="btn-edit" click="editItem(item)">
                 <ion-icon name="pencil-outline"></ion-icon>
               </button>
               <button class="btn-delete" @click="deleteEmployee(item.id)">
