@@ -7,12 +7,25 @@ import { getAllPayrolls } from '@/services/FirestoreFunctions'
 //Importacion de datos
 
 const router = useRouter()
-
+let isLoading = ref(false);
 const headers = [
   { title: 'No. Nómina', key: 'uid' },
   { title: 'No. Empleado', key: 'rfcEmpleado'},
-  { title: 'IMSS', key: 'imss' },
-  { title: 'Salario Neto', key: 'salarioNeto' },
+  { title: 'IMSS', key: 'imss', 
+  value: item => {
+    let numero = Math.floor(item.imss); 
+    return `$${numero}`
+  }},
+  { title: 'Salario Neto', key: 'salarioNeto', 
+  value: item => {
+    let numero = Math.floor(item.salarioNeto); 
+    return `$${numero}`
+  }},
+  { title: 'Salario Bruto', key: 'salarioBruto', 
+  value: item => {
+    let numero = Math.floor(item.salarioBruto); 
+    return `$${numero}`
+  }},
   { title: 'Faltas', key: 'faltas' },
   { title: 'Acciones', key: 'actions', sortable: false },
 ]
@@ -27,6 +40,11 @@ const payrolls = ref([
 ])
 let dialog = ref(false);
 
+function dosDecimales(numero: number): string {
+    // Usamos el método toFixed para truncar el número a dos decimales
+    const numeroTruncado = numero.toFixed(2);
+    return numeroTruncado;
+}
 function getColor(range: any) {
   if (range == 'Ingeniero') return 'red'
   else if (range == 'Programador') return 'orange'
@@ -50,7 +68,6 @@ async function onGetAllPayroll(){
     console.log('Datos de todos', response);
     console.log('Payrolles de todos', payrolls.value);
 }
-let isLoading = ref(false);
 onMounted(async () => {
     isLoading.value = true;
     await onGetAllPayroll();
@@ -85,15 +102,15 @@ onMounted(async () => {
         </div>
       </div>
       <div class="table-container">
-        <v-data-table class="table" :headers="headers" :search="search" :items="payrolls">
+        <v-data-table 
+          class="table" 
+          :headers="headers" 
+          :search="search" 
+          :items="payrolls"
+          loading-text="Loading... Please wait"
+          :loading = "isLoading">
           <template v-slot:item.actions="{ item }">
             <div class="actions">
-              <button class="btn-edit" click="editItem(item)">
-                <ion-icon name="create-outline"></ion-icon>
-              </button>
-              <button class="btn-edit" click="editItem(item)">
-                <ion-icon name="document-text-outline"></ion-icon>
-              </button>
               <button class="btn-delete" @click="deleteItem(item)">
                 <ion-icon name="trash-outline"></ion-icon>
               </button>

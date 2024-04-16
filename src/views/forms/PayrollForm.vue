@@ -76,6 +76,17 @@ async function submit(){
     try {
         let nomina: any;
         let response = await getEmployeeByRfc(employeeRfc.value);
+        console.log('Usuario obtenido', response);
+        if(Object.keys(response).length === 0){
+            closeDialog();
+            Swal.fire({
+                title: 'Error!',
+                text: 'No existe el RFC en la base de datos',
+                icon: 'error',
+                confirmButtonText: 'Cool'
+            })
+            return
+        }
         response.totalHours = response.totalHours - faltas.value;
         let values = await calcularNomina(response);
         Swal.fire({
@@ -93,13 +104,13 @@ async function submit(){
         return nomina;
     } catch (error) {
         console.log(error);
+        closeDialog();
         Swal.fire({
             title: 'Error!',
             text: 'Do you want to continue',
             icon: 'error',
             confirmButtonText: 'Cool'
         })
-        closeDialog();
     }
 }
 function checkForm(){
