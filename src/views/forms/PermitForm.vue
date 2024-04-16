@@ -4,7 +4,6 @@ import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import Swal from 'sweetalert2'
 //Importacion de datos
-import { ranges, departments } from '@/data/employeesData'
 import type { Permit } from '@/interfaces/permits'
 
 const dateSelect: Ref<string | undefined> = ref()
@@ -17,7 +16,12 @@ let form: Ref<Permit> = ref({
     motive: motive.value!,
     date: dateSelect.value!
 })
-
+const permitTypes = [
+    'Vacaciones',
+    'Permiso',
+    'Enfermedad',
+    'Urgente'
+]
 function submit(){
     console.log('Form values')
     form.value = {

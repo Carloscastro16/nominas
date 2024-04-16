@@ -8,6 +8,8 @@ import SettingsView from '@/views/SettingsView.vue'
 import PermitView from '@/views/PermitView.vue'
 import VacationsFormView from '@/views/forms/VacationsForm.vue'
 import PermitFormView from '@/views/forms/PermitForm.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
+import PayrollForm from '@/views/forms/PayrollForm.vue'
 
 const auth = getAuth();
 
@@ -16,14 +18,20 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
-      meta: { requiresAuth: true } 
+      name: 'default',
+      redirect: '/dashboard',
+      meta: { requiresAuth: true } // indicar que esta ruta requiere autenticación
     },
     {
       path: '/login',
       name: 'login',
       component: LoginView
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: EmployeesView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/employees',
@@ -50,6 +58,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/payroll/generator',
+      name: 'generator',
+      component: PayrollForm,
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/permits/vacations',
       name: 'vacations',
       component: VacationsFormView,
@@ -66,6 +80,11 @@ const router = createRouter({
       name: 'urgent-request',
       component: PermitFormView,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/:catchAll(.*)',
+      name: 'not-found',
+      component: NotFoundView,
     },
   ]
 })

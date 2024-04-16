@@ -8,12 +8,12 @@ const { drawer, rail, toggleRail } = useDrawer()
 const sidebarData = [
   {
     title: 'Dashboard',
-    icon: new URL('../../assets/icons/permits.png', import.meta.url),
+    icon: new URL('../../assets/icons/home.png', import.meta.url),
     link: '/dashboard'
   },
   {
     title: 'Empleados',
-    icon: new URL('../../assets/icons/permits.png', import.meta.url),
+    icon: new URL('../../assets/icons/employees.png', import.meta.url),
     link: '/Employees'
   },
   {
@@ -28,7 +28,7 @@ const sidebarData = [
   },
   {
     title: 'Ajustes',
-    icon: new URL('../../assets/icons/permits.png', import.meta.url),
+    icon: new URL('../../assets/icons/settings.png', import.meta.url),
     link: '/settings'
   }
 ]
@@ -39,7 +39,7 @@ function redirectTo(query: string) {
 <template>
   <div class="side" :class="rail ? 'open':'closed'" @mouseenter="toggleRail(true)" @mouseleave="toggleRail(false)">
     <div class="title">
-      <img src="" alt="">
+      <img src="../../assets/icons/logo.png" alt="">
       <span>Planner Pay</span>
     </div>
     <div class="menu">
@@ -71,18 +71,24 @@ function redirectTo(query: string) {
     &.closed{
       transition: all 1s ease;
       width: fit-content;
+      .list-item{
+        justify-content: center;
+        width: fit-content !important;
+      }
       .title{
         img{
-          width: 25px;
+          width: 50px;
         }
         span{
           display: none;
         }
-        width: 25px;
       }
       .menu{
+        justify-content: center;
+        align-items: center;
         .list-title{
           display: none;
+          
         }
       }
     }
@@ -92,8 +98,12 @@ function redirectTo(query: string) {
       height: 100vh;
     }
     .title{
-      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
       color: #fff;
+      margin-bottom: 2rem;
     }
     .menu{
       transition: all .4s ease;

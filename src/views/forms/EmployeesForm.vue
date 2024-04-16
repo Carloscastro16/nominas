@@ -1,53 +1,83 @@
 <script lang="ts" setup>
-import { ref, defineEmits } from 'vue'
-import { setEmployeeInfo } from '@/services/FirestoreFunctions'
+import { ref, type Ref } from 'vue'
+import '@vuepic/vue-datepicker/dist/main.css'
+import Swal from 'sweetalert2'
+//Importacion de datos
 import { ranges, departments } from '@/data/employeesData'
 import type { Employee } from '@/interfaces/employees'
-import Swal from 'sweetalert2'
-import VueDatePicker from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
-// Declaración de los datos del formulario y otras variables necesarias
-const name = ref<string | undefined>('')
-const curp = ref<string | undefined>('')
-const rfc = ref<string | undefined>('')
-const imss = ref<string | undefined>('')
-const lastName = ref<string | undefined>('')
-const hourlyWage = ref<string | undefined>('')
-const rangeSelect = ref<string | undefined>('')
-const departmentSelect = ref<string | undefined>('')
-const emits = defineEmits(['closeDialog'])
+import { setEmployeeInfo } from '@/services/FirestoreFunctions'
 
-// Función para enviar los datos del formulario
-async function submit() {
-    const employeeData = {
-        name: name.value,
+const name: Ref<string | undefined> = ref()
+const curp: Ref<string | undefined> = ref()
+const rfc: Ref<string | undefined> = ref()
+const imss: Ref<string | undefined> = ref()
+const lastName: Ref<string | undefined> = ref()
+const hourlyWage: Ref<string | undefined> = ref()
+const rangeSelect: Ref<string | undefined> = ref()
+const departmentSelect: Ref<string | undefined> = ref()
+const emits = defineEmits(['closeDialog', 'submit'])
+let form: Ref<Employee> = ref({
+    name: name.value,
+    lastName: lastName.value,
+    curp: curp.value,
+    rfc: rfc.value,
+    imss: imss.value,
+    range: rangeSelect.value,
+    department: departmentSelect.value,
+    hourlyWage: hourlyWage.value,
+    totalHours: 15.25
+})
+function generarCorreo(nombre, apellido) {
+    // Obtener las primeras 3 letras del nombre y convertirlas a minúsculas
+    const nombreAbreviado = nombre.substring(0, 3).toLowerCase();
+    
+    // Obtener el primer apellido y convertir la primera letra a minúscula
+    const primerApellido = apellido.split(' ')[0].toLowerCase();
+    
+    // Generar el correo electrónico combinando el nombre abreviado y el primer apellido
+    const correo = nombreAbreviado + '.' + primerApellido + '@mail.com';
+    
+    return correo;
+}
+async function submit(){
+    let response: any;
+    console.log('Form values')
+    form.value = {
+        name: name.value!,
+        lastName: lastName.value,
         curp: curp.value,
         rfc: rfc.value,
         imss: imss.value,
-        lastName: lastName.value,
         hourlyWage: hourlyWage.value,
         range: rangeSelect.value,
-        department: departmentSelect.value
+        department: departmentSelect.value,
+        mail: generarCorreo(name.value, lastName.value),
+        totalHours: 15.25
     }
-    
+    console.log(form.value);
     try {
-        const response = await setEmployeeInfo(employeeData)
+        response = await setEmployeeInfo(form.value);
+        console.log(response);
+        closeDialog();
         Swal.fire({
             title: 'Exito!',
             icon: 'success',
             confirmButtonText: 'Cool'
         })
-       
     } catch (error) {
         console.error('Error al crear el empleado:', error)
     }
+}
+function checkForm(){
 
     closeDialog()
 }
 
 const closeDialog = () => {
-    emits('closeDialog', false)
-}
+  // Emitir el evento al padre con los datos
+    emits('closeDialog', false);
+};
+
 </script>
 <template>
     <div class="container">
@@ -134,6 +164,7 @@ const closeDialog = () => {
                             return-object
                             single-line
                             variant="outlined"
+                            type="number"
                         ></v-text-field>
                     </div>
                 </div>
@@ -176,6 +207,8 @@ const closeDialog = () => {
                         Sueldo por Hora
                     </div>
                     <v-text-field
+                        prefix="$"
+                        suffix="MXN"
                         density="compact"
                         v-model="hourlyWage"
                         item-title="lastname"
@@ -183,6 +216,7 @@ const closeDialog = () => {
                         return-object
                         single-line
                         variant="outlined"
+                        type="number"
                     ></v-text-field>
                 </div>
                 

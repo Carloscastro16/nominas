@@ -1,51 +1,32 @@
 <script setup lang="ts">
 import NavbarComponent from '@/components/assets/NavbarComponent.vue';
 import { computed, ref, type Ref } from 'vue';
-import { RouterLink, RouterView, useRoute } from 'vue-router'
-import useDrawer from '@/stores/Logic';
+import { RouterView, useRoute } from 'vue-router'
 import { useRouter } from 'vue-router';
 import SidebarComponent from './components/assets/SidebarComponent.vue';
 const router = useRouter()
 const route = useRoute();
-//Logica para el funcionamiento del Sidebar
-const { drawer, rail, toggleRail } = useDrawer();
 
-const sidebarData = [
-  {
-    title: 'Dashboard',
-    icon: new URL('./assets/icons/permits.png', import.meta.url),
-    link: '/dashboard'
-  },
-  {
-    title: 'Empleados',
-    icon: new URL('./assets/icons/permits.png', import.meta.url),
-    link: '/Employees'
-  },
-  {
-    title: 'Nomina',
-    icon: new URL('./assets/icons/payroll.png', import.meta.url),
-    link: '/payroll'
-  },
-  {
-    title: 'Permisos',
-    icon: new URL('./assets/icons/permits.png', import.meta.url),
-    link: '/permits'
-  },
-  {
-    title: 'Ajustes',
-    icon: new URL('./assets/icons/permits.png', import.meta.url),
-    link: '/settings'
-  },
-]
+let isLoginPage = ref(false);
+let pathFinalValue: any = ref('Dashboard');
 
 function getRoute() {
   const path = computed(() => route.path)
   let stringPath = path.value.toString()
   let pathValue: Ref<any> = ref()
-  console.log('path original', path)
-  console.log('path pasado a string', stringPath)
   switch (stringPath) {
+    case '/dashboard':
+    pathFinalValue.value = 'Dashboard'
+      isLoginPage.value = false;
+      pathValue.value = [{
+        title: 'Dashboard',
+        disabled: false,
+        href: '/dashboard',
+      },]
+      break;
     case '/Employees':
+    pathFinalValue.value = 'Empleados'
+      isLoginPage.value = false;
       pathValue.value = [{
         title: 'Empleados',
         disabled: false,
@@ -53,6 +34,8 @@ function getRoute() {
       },]
       break;
     case '/login':
+    pathFinalValue.value = 'Login'
+      isLoginPage.value = true;
       pathValue.value = [{
         title: 'Login',
         disabled: false,
@@ -60,6 +43,8 @@ function getRoute() {
       },]
       break;
     case '/payroll':
+    pathFinalValue.value = 'Nominas'
+      isLoginPage.value = false;
       pathValue.value = [{
         title: 'Nominas',
         disabled: false,
@@ -67,6 +52,8 @@ function getRoute() {
       },]
       break;
     case '/settings':
+    pathFinalValue.value = 'Ajustes'
+      isLoginPage.value = false;
       pathValue.value = [{
         title: 'Ajustes',
         disabled: false,
@@ -74,6 +61,8 @@ function getRoute() {
       },]
       break;
     case '/permits':
+    pathFinalValue.value = 'Permisos'
+      isLoginPage.value = false;
       pathValue.value = [{
         title: 'Permisos',
         disabled: false,
@@ -81,6 +70,8 @@ function getRoute() {
       },]
       break;
     case '/permits/vacations':
+    pathFinalValue.value = 'Vacaciones'
+      isLoginPage.value = false;
       pathValue.value = [{
         title: 'Permisos',
         disabled: false,
@@ -93,6 +84,8 @@ function getRoute() {
       }]
       break;
     case '/permits/permit-request':
+      pathFinalValue.value = 'Permiso'
+      isLoginPage.value = false;
       pathValue.value = [{
         title: 'Permisos',
         disabled: false,
@@ -105,6 +98,8 @@ function getRoute() {
       }]
       break;
     case '/permits/urgent-request':
+      pathFinalValue.value = 'Urgente'
+      isLoginPage.value = false;
       pathValue.value = [{
         title: 'Permisos',
         disabled: false,
@@ -116,22 +111,36 @@ function getRoute() {
         href: '/permits/urgent-permit',
       }]
       break;
+    default:
+    pathFinalValue.value = 'dashboard'
+      pathValue.value = [{
+        title: 'Permisos',
+        disabled: false,
+        href: '/permits',
+      }]
   }
+  /* if(pathValue.value.title == 'Login'){
+    
+  } */
+  if(pathFinalValue.value != 'Login'){
+    isLoginPage.value = false;
+    console.log('No es login')
+  }else{
+    isLoginPage.value = true;
+    console.log('Es login')
+  }
+  console.log('ValorFinal', pathFinalValue.value);
   return pathValue
 }
 
-function redirectTo(query: string){
-  router.push(query)
-}
 </script>
 
 <template>
   <main class='ultra-container' >
-    <SidebarComponent>
-
+    <SidebarComponent v-if="!isLoginPage">
     </SidebarComponent>
     <div class="main-container">
-      <NavbarComponent>
+      <NavbarComponent v-if="!isLoginPage">
         <template #title>
           <v-breadcrumbs class="breadcrumbs" :items="getRoute().value"></v-breadcrumbs>
         </template>

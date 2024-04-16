@@ -9,4 +9,5 @@ export interface Employee {
     range?: string;
     department?: string;
     hourlyWage?: string;
+    mail?: string;
 }

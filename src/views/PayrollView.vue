@@ -1,40 +1,59 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 let search = ref('');
+import { useRouter } from 'vue-router'
+import PayrollForm from './forms/PayrollForm.vue'
+import { getAllPayrolls, deletePayrollById } from '@/services/FirestoreFunctions'
+import Swal from 'sweetalert2'
+//Importacion de datos
+
+const router = useRouter()
+let isLoading = ref(false);
 const headers = [
-  { title: 'Puesto', key: 'puesto' },
-  { title: 'No. Nómina', key: 'nomina' },
-  { title: 'Periodo del', key: 'periodo' },
-  { title: 'Días trabajados', key: 'dias' },
+  { title: 'No. Nómina', key: 'uid' },
+  { title: 'No. Empleado', key: 'rfcEmpleado'},
+  { title: 'IMSS', key: 'imss', 
+  value: item => {
+    let numero = Math.floor(item.imss); 
+    return `$${numero}`
+  }},
+  { title: 'Salario Neto', key: 'salarioNeto', 
+  value: item => {
+    let numero = Math.floor(item.salarioNeto); 
+    return `$${numero}`
+  }},
+  { title: 'Salario Bruto', key: 'salarioBruto', 
+  value: item => {
+    let numero = Math.floor(item.salarioBruto); 
+    return `$${numero}`
+  }},
   { title: 'Faltas', key: 'faltas' },
   { title: 'Acciones', key: 'actions', sortable: false },
 ]
-const employees = [
+const payrolls = ref([
   {
-    "puesto": "SISTEMAS",
-    "nomina": "5",
-    "periodo": "01/mar./2024 al 15/mar./2024",
-    "dias": "15.25",
-    "faltas": "0",
-    "actions": "Acciones"
-  },
-  {
-    "puesto": "SISTEMAS",
-    "nomina": "5",
-    "periodo": "01/mar./2024 al 15/mar./2024",
-    "dias": "15.25",
-    "faltas": "0",
-    "actions": "Acciones"
-  },
-  {
-    "puesto": "SISTEMAS",
-    "nomina": "5",
-    "periodo": "01/mar./2024 al 15/mar./2024",
-    "dias": "15.25",
-    "faltas": "0",
-    "actions": "Acciones"
+    "rfcEmpleado": "12",
+    "uid": "5",
+    "imss": "01/mar./2024 al 15/mar./2024",
+    "salario neto": "15.25",
+    "faltas": "0"
   }
-]
+])
+let dialog = ref(false);
+const Toast = Swal.mixin({
+  customClass: {
+    popup: 'colored-toast',
+  },
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});
 
 function getColor(range: any) {
   if (range == 'Ingeniero') return 'red'
@@ -44,10 +63,38 @@ function getColor(range: any) {
 function editItem(item: any) {
   return item
 }
-function deleteItem(item: any) {
+async function deleteItem(item: any) {
+  await deletePayrollById(item.uid);
+  Toast.fire({
+    icon: "success",
+    title: "Eliminado correctamente"
+  });
+  await onGetAllPayroll();
   return item
 }
-
+function redirectTo(query: string) {
+  router.push(query)
+}
+function closeDialog(){
+    dialog.value = false
+}
+async function reloadData(event: any){
+  if(event){
+    await onGetAllPayroll();
+    return
+  }else{
+    return
+  }
+}
+async function onGetAllPayroll(){
+    let response = await getAllPayrolls()
+    payrolls.value = response
+}
+onMounted(async () => {
+    isLoading.value = true;
+    await onGetAllPayroll();
+    isLoading.value = false;
+  })
 </script>
 
 <template>
@@ -59,18 +106,32 @@ function deleteItem(item: any) {
           <input type="text" v-model="search" placeholder="Search">
         </div>
         <div class="add-btn">
-          <button>
-            <ion-icon name="add-outline"></ion-icon>
-          </button>
+          <v-dialog
+            v-model="dialog"
+            max-width="80%"
+            max-height="80vh"
+            scrollable
+          >
+            <template v-slot:activator="{ props: activatorProps }">
+              <button v-bind="activatorProps">
+                <ion-icon name="add-outline"></ion-icon>
+              </button>
+            </template>
+            <PayrollForm @closeDialog="closeDialog()" @submit="reloadData($event);">
+            </PayrollForm>
+          </v-dialog>
         </div>
       </div>
       <div class="table-container">
-        <v-data-table class="table" :headers="headers" :search="search" :items="employees">
+        <v-data-table 
+          class="table" 
+          :headers="headers" 
+          :search="search" 
+          :items="payrolls"
+          loading-text="Loading... Please wait"
+          :loading = "isLoading">
           <template v-slot:item.actions="{ item }">
             <div class="actions">
-              <button class="btn-edit" click="editItem(item)">
-                <ion-icon name="pencil-outline"></ion-icon>
-              </button>
               <button class="btn-delete" @click="deleteItem(item)">
                 <ion-icon name="trash-outline"></ion-icon>
               </button>
