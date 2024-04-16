@@ -5,7 +5,7 @@ import Swal from 'sweetalert2'
 import { getEmployeeByRfc, setPayrollInfo, getAllEmployees } from '@/services/FirestoreFunctions'
 //Importacion de datos
 
-/* const dateSelect: Ref<string | undefined> = ref(); */
+const errorMessage: Ref<string | undefined> = ref();
 const employeeRfc: Ref<string | undefined> = ref();
 const employeesData = ref();
 let faltas: Ref<string | undefined> = ref();
@@ -70,7 +70,7 @@ function calcularISR(salarioGravable: number) {
 }
 
 function calcularSalarioBruto(empleado: any): number {
-    const salarioBruto = empleado.hourlyWage * empleado.totalHours;
+    const salarioBruto = (empleado.hourlyWage * 8) * empleado.totalHours;
     console.log('Bruto', salarioBruto)
     return salarioBruto;
 }
@@ -87,6 +87,12 @@ function calcularDeduccionesIMSS(empleado: any): number {
 async function submit(){
     try {
         let nomina: any;
+        let validForm = await checkForm();
+        if(!validForm){
+            errorMessage.value = 'Faltan datos en el formulario'
+            console.error('Invalid Form')
+            return
+        }
         let response = await getEmployeeByRfc(employeeRfc.value);
         console.log('Usuario obtenido', response);
         if(Object.keys(response).length === 0){
@@ -128,8 +134,25 @@ async function submit(){
         })
     }
 }
-function checkForm(){
+function checkForm() {
+  const faltasValue = faltas.value;
+  const rfcEmpleadoValue = employeeRfc.value;
 
+  if (!faltasValue || faltasValue.trim() === '') {
+    console.log('Por favor, ingrese un número válido de faltas.');
+    return;
+  }
+
+  if (!rfcEmpleadoValue || rfcEmpleadoValue.trim() === '') {
+    console.log('Por favor, ingrese un RFC de empleado válido.');
+    return;
+  }
+
+  const nomina = {
+    faltas: faltasValue,
+    rfcEmpleado: rfcEmpleadoValue
+  };
+  return nomina;
 }
 onMounted(async () => {
   await onGetAllEmployees()
@@ -181,6 +204,9 @@ onMounted(async () => {
                     </div>
 
                 </div>
+                <div class="error-message">
+                    {{ errorMessage }}
+                </div>
                 <div class="btn-wrapper">
                     <v-btn class="me-4 px-8 text-white submit-pill" type="submit" rounded="pill">
                         Generar Nomina
@@ -192,6 +218,10 @@ onMounted(async () => {
 </template>
 
 <style scoped lang="scss">
+.error-message{
+    color: #ea2222;
+    font-size: .8rem;
+}
 .form-container{
     background: #fff;
     border-radius: 1rem;

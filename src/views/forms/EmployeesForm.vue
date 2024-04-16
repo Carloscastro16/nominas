@@ -42,8 +42,12 @@ function generarCorreo(nombre, apellido) {
 async function submit(){
     let response: any;
     console.log('Form values')
-    checkForm();
-    
+    let validForm = checkForm();
+    if(!validForm){
+        errorMessage.value = 'Faltan datos en el formulario'
+        console.error('Invalid Form')
+        return
+    }
     form.value = {
         name: name.value!,
         lastName: lastName.value,
@@ -72,25 +76,76 @@ async function submit(){
         emits('submit', false);
     }
 }
-function checkForm(){
-    const formValues: (string | number)[] = Object.values(form.value);
-  
-    // Validar que todos los campos tengan un valor
-    const allValuesFilled = formValues.every(value => {
-        // Verificar si el valor es una cadena no vacía o un número diferente de 0
-        return typeof value === 'string' ? !!value.trim() : value !== null && value !== undefined;
-    });
+function checkForm() {
+  const nameValue = name.value;
+  const lastNameValue = lastName.value;
+  const curpValue = curp.value;
+  const rfcValue = rfc.value;
+  const imssValue = imss.value;
+  const hourlyWageValue = hourlyWage.value;
+  const rangeValue = rangeSelect.value;
+  const departmentValue = departmentSelect.value;
 
-    if (allValuesFilled) {
-        // Enviar el formulario
-        console.log('Formulario válido, enviar datos:', form.value);
-    } else {
-        // Mostrar un mensaje de error o tomar otra acción
-        errorMessage.value = 'Hay campos vacios, por favor, complete todos los campos'
-        return
-    }
-    closeDialog()
+  if (!nameValue || nameValue.trim() === '') {
+    console.log('Por favor, ingrese un nombre válido.');
+    return false;
+  }
+
+  if (!lastNameValue || lastNameValue.trim() === '') {
+    console.log('Por favor, ingrese un apellido válido.');
+    return false;
+  }
+
+  if (!curpValue || curpValue.trim() === '') {
+    console.log('Por favor, ingrese una CURP válida.');
+    return false;
+  }
+
+  if (!rfcValue || rfcValue.trim() === '') {
+    console.log('Por favor, ingrese un RFC válido.');
+    return false;
+  }
+
+  if (!imssValue || imssValue.trim() === '') {
+    console.log('Por favor, ingrese un número de IMSS válido.');
+    return false;
+  }
+
+  if (!hourlyWageValue || isNaN(parseFloat(hourlyWageValue))) {
+    console.log('Por favor, ingrese un salario por hora válido.');
+    return false;
+  }
+
+  if (!rangeValue || rangeValue.trim() === '') {
+    console.log('Por favor, seleccione un rango válido.');
+    return false;
+  }
+
+  if (!departmentValue || departmentValue.trim() === '') {
+    console.log('Por favor, seleccione un departamento válido.');
+    return false;
+  }
+
+  const mailValue = generarCorreo(nameValue, lastNameValue);
+  const totalHoursValue = 15.25;
+
+  const formValue = {
+    name: nameValue,
+    lastName: lastNameValue,
+    curp: curpValue,
+    rfc: rfcValue,
+    imss: imssValue,
+    hourlyWage: parseFloat(hourlyWageValue),
+    range: rangeValue,
+    department: departmentValue,
+    mail: mailValue,
+    totalHours: totalHoursValue
+  };
+
+  console.log('Formulario válido, enviar datos:', formValue);
+  return true;
 }
+
 
 const closeDialog = () => {
   // Emitir el evento al padre con los datos

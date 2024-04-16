@@ -40,7 +40,7 @@ function closeDialog() {
 }
 async function reloadData(event: any){
   if(event){
-    await onGetAllPayroll();
+    await onGetAllEmployees();
     return
   }else{
     return

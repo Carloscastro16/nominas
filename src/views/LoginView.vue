@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useField, useForm } from 'vee-validate'
 import { Login } from '@/services/FirestoreFunctions'; 
 import type { Ref } from 'vue'

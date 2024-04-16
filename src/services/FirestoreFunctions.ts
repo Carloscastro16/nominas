@@ -6,7 +6,6 @@ import type { Router } from 'vue-router';
 
 // used for the firestore refs
 import { db } from '@/services/firebaseInit'
-import HomeView from "@/views/HomeView.vue";
 import type { Employee } from "@/interfaces/employees";
 const permitsRef = collection(db, "permits");
 const vacationsRef = collection(db, "vacations");
