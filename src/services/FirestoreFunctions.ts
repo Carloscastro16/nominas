@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, getDoc, getDocs, query, where } from "firebase/firestore"; 
+import { collection, doc, setDoc, getDoc, getDocs, query, where, deleteDoc } from "firebase/firestore"; 
 import { getAuth, signInWithEmailAndPassword,signOut} from 'firebase/auth';
 import { auth } from '@/services/firebaseInit';
 import { ref } from 'vue';
@@ -254,7 +254,19 @@ export async function setPayrollInfo(formValue: any){
         return
     }
 }
-
+export async function deletePayrollById(id: any){
+    try {
+        if(!id){
+            console.error('Id de payroll not found');
+            return
+        }
+        const response = await deleteDoc(doc(db, "payroll", id));
+        return response;
+    } catch (error) {
+        console.error(error);
+        return
+    }
+}
 
 // --- Autenticaciones ---
 

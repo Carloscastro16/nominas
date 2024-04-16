@@ -3,7 +3,8 @@ import { ref, onMounted } from 'vue';
 let search = ref('');
 import { useRouter } from 'vue-router'
 import PayrollForm from './forms/PayrollForm.vue'
-import { getAllPayrolls } from '@/services/FirestoreFunctions'
+import { getAllPayrolls, deletePayrollById } from '@/services/FirestoreFunctions'
+import Swal from 'sweetalert2'
 //Importacion de datos
 
 const router = useRouter()
@@ -39,12 +40,21 @@ const payrolls = ref([
   }
 ])
 let dialog = ref(false);
+const Toast = Swal.mixin({
+  customClass: {
+    popup: 'colored-toast',
+  },
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  didOpen: (toast) => {
+    toast.onmouseenter = Swal.stopTimer;
+    toast.onmouseleave = Swal.resumeTimer;
+  }
+});
 
-function dosDecimales(numero: number): string {
-    // Usamos el método toFixed para truncar el número a dos decimales
-    const numeroTruncado = numero.toFixed(2);
-    return numeroTruncado;
-}
 function getColor(range: any) {
   if (range == 'Ingeniero') return 'red'
   else if (range == 'Programador') return 'orange'
@@ -53,7 +63,13 @@ function getColor(range: any) {
 function editItem(item: any) {
   return item
 }
-function deleteItem(item: any) {
+async function deleteItem(item: any) {
+  await deletePayrollById(item.uid);
+  Toast.fire({
+    icon: "success",
+    title: "Eliminado correctamente"
+  });
+  await onGetAllPayroll();
   return item
 }
 function redirectTo(query: string) {
@@ -62,11 +78,17 @@ function redirectTo(query: string) {
 function closeDialog(){
     dialog.value = false
 }
+async function reloadData(event: any){
+  if(event){
+    await onGetAllPayroll();
+    return
+  }else{
+    return
+  }
+}
 async function onGetAllPayroll(){
     let response = await getAllPayrolls()
     payrolls.value = response
-    console.log('Datos de todos', response);
-    console.log('Payrolles de todos', payrolls.value);
 }
 onMounted(async () => {
     isLoading.value = true;
@@ -95,8 +117,7 @@ onMounted(async () => {
                 <ion-icon name="add-outline"></ion-icon>
               </button>
             </template>
-            <PayrollForm @closeDialog="closeDialog()">
-
+            <PayrollForm @closeDialog="closeDialog()" @submit="reloadData($event);">
             </PayrollForm>
           </v-dialog>
         </div>

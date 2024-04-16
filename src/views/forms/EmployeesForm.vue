@@ -15,7 +15,7 @@ const lastName: Ref<string | undefined> = ref()
 const hourlyWage: Ref<string | undefined> = ref()
 const rangeSelect: Ref<string | undefined> = ref()
 const departmentSelect: Ref<string | undefined> = ref()
-const emits = defineEmits(['closeDialog'])
+const emits = defineEmits(['closeDialog', 'submit'])
 let form: Ref<Employee> = ref({
     name: name.value,
     lastName: lastName.value,
@@ -55,19 +55,19 @@ async function submit(){
         totalHours: 15.25
     }
     console.log(form.value);
-    closeDialog();
     try {
         response = await setEmployeeInfo(form.value);
         console.log(response);
+        closeDialog();
         Swal.fire({
             title: 'Exito!',
             icon: 'success',
             confirmButtonText: 'Cool'
         })
+        return response;
     } catch (error) {
         console.log(error);
     }
-    return response;
 }
 function checkForm(){
 

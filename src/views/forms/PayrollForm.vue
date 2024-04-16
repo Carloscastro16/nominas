@@ -8,7 +8,7 @@ import { getEmployeeByRfc, setPayrollInfo } from '@/services/FirestoreFunctions'
 /* const dateSelect: Ref<string | undefined> = ref(); */
 const employeeRfc: Ref<string | undefined> = ref();
 let faltas: Ref<string | undefined> = ref();
-const emits = defineEmits(['closeDialog'])
+const emits = defineEmits(['closeDialog', 'submit'])
 const closeDialog = () => {
   // Emitir el evento al padre con los datos
     emits('closeDialog', false);
@@ -89,21 +89,25 @@ async function submit(){
         }
         response.totalHours = response.totalHours - faltas.value;
         let values = await calcularNomina(response);
-        Swal.fire({
-            title: 'Exito!',
-            icon: 'success',
-            confirmButtonText: 'Cool'
-        })
+        
         nomina = {
             ...values, 
             rfcEmpleado: response.rfc
         }
         console.log(nomina);
         await setPayrollInfo(nomina);
+
+        emits('submit', true);
         closeDialog();
+        Swal.fire({
+            title: 'Exito!',
+            icon: 'success',
+            confirmButtonText: 'Cool'
+        })
         return nomina;
     } catch (error) {
         console.log(error);
+        emits('submit', true);
         closeDialog();
         Swal.fire({
             title: 'Error!',
