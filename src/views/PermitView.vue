@@ -24,7 +24,7 @@ function redirectTo(query: string){
           </div>
         </div>
       </div>
-      <div class="card" @click="redirectTo('/permits/urgent-request')">
+      <!-- <div class="card" @click="redirectTo('/permits/urgent-request')">
         <div class="card-banner">
           <img src="../assets/images/urgent.webp" alt="">
         </div>
@@ -38,7 +38,7 @@ function redirectTo(query: string){
             </router-link>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="card" @click="redirectTo('/permits/permit-request')">
         <div class="card-banner">
           <img src="../assets/images/permits.webp" alt="">
@@ -64,15 +64,16 @@ function redirectTo(query: string){
     display: flex;
     width: 100%;
     flex-direction: column;
-    gap: 1rem;
+    gap: 2.5rem;
     .card{
       background-color: #fff;
       border-radius: 1rem;
       cursor: pointer;
       animation:cubic-bezier(1, 0, 0, 1);
-      transition: all 400ms linear infinite;
+      transition: all 400ms ease-in-out;
       box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
       &:hover{
+        transition: all 400ms ease-in-out;
         transform: scale(1.04);
       }
       .card-banner{

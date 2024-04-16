@@ -6,7 +6,7 @@ import Swal from 'sweetalert2'
 import { ranges, departments } from '@/data/employeesData'
 import type { Employee } from '@/interfaces/employees'
 import { setEmployeeInfo } from '@/services/FirestoreFunctions'
-
+let errorMessage = ref();
 const name: Ref<string | undefined> = ref()
 const curp: Ref<string | undefined> = ref()
 const rfc: Ref<string | undefined> = ref()
@@ -42,6 +42,8 @@ function generarCorreo(nombre, apellido) {
 async function submit(){
     let response: any;
     console.log('Form values')
+    checkForm();
+    
     form.value = {
         name: name.value!,
         lastName: lastName.value,
@@ -64,12 +66,29 @@ async function submit(){
             icon: 'success',
             confirmButtonText: 'Cool'
         })
+        emits('submit', true);
     } catch (error) {
         console.error('Error al crear el empleado:', error)
+        emits('submit', false);
     }
 }
 function checkForm(){
+    const formValues: (string | number)[] = Object.values(form.value);
+  
+    // Validar que todos los campos tengan un valor
+    const allValuesFilled = formValues.every(value => {
+        // Verificar si el valor es una cadena no vacía o un número diferente de 0
+        return typeof value === 'string' ? !!value.trim() : value !== null && value !== undefined;
+    });
 
+    if (allValuesFilled) {
+        // Enviar el formulario
+        console.log('Formulario válido, enviar datos:', form.value);
+    } else {
+        // Mostrar un mensaje de error o tomar otra acción
+        errorMessage.value = 'Hay campos vacios, por favor, complete todos los campos'
+        return
+    }
     closeDialog()
 }
 
@@ -219,7 +238,9 @@ const closeDialog = () => {
                         type="number"
                     ></v-text-field>
                 </div>
-                
+                <div class="error-message">
+                    {{ errorMessage }}
+                </div>
                 <div class="btn-wrapper">
                     <button class="submit-pill px-8 py-1 rounded text-white">
                         Enviar Solicitud
@@ -231,6 +252,10 @@ const closeDialog = () => {
 </template>
 
 <style scoped lang="scss">
+.error-message{
+    color: #ea2222;
+    font-size: .8rem;
+}
 .form-container{
     background: #fff;
     border-radius: 1rem;
@@ -282,8 +307,9 @@ const closeDialog = () => {
     justify-content: flex-end;
     .submit-pill{
         background: var(--primary-color);
+        border: 1.5px solid var(--primary-color);
         &:hover{
-            background: #fff !important;
+            background: transparent !important;
             color: var(--primary-color) !important;
             border: 1.5px solid var(--primary-color)
         }

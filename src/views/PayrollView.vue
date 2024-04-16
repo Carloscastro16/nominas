@@ -12,6 +12,11 @@ let isLoading = ref(false);
 const headers = [
   { title: 'No. Nómina', key: 'uid' },
   { title: 'No. Empleado', key: 'rfcEmpleado'},
+  { title: 'Por Hora', key: 'hourlyWage', 
+  value: item => {
+    let numero = Math.floor(item.hourlyWage); 
+    return `$${numero}`
+  }},
   { title: 'IMSS', key: 'imss', 
   value: item => {
     let numero = Math.floor(item.imss); 
@@ -72,9 +77,7 @@ async function deleteItem(item: any) {
   await onGetAllPayroll();
   return item
 }
-function redirectTo(query: string) {
-  router.push(query)
-}
+
 function closeDialog(){
     dialog.value = false
 }
@@ -115,6 +118,7 @@ onMounted(async () => {
             <template v-slot:activator="{ props: activatorProps }">
               <button v-bind="activatorProps">
                 <ion-icon name="add-outline"></ion-icon>
+                <p>Generar Nomina</p>
               </button>
             </template>
             <PayrollForm @closeDialog="closeDialog()" @submit="reloadData($event);">

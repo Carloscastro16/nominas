@@ -3,9 +3,10 @@ import { ref, type Ref } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import Swal from 'sweetalert2'
+import { useRouter } from 'vue-router'
 //Importacion de datos
 import type { Permit } from '@/interfaces/permits'
-
+const router = useRouter()
 const dateSelect: Ref<string | undefined> = ref()
 const employeeId: Ref<string | undefined> = ref()
 const motive: Ref<string | undefined> = ref()
@@ -32,6 +33,10 @@ function submit(){
     })
     console.log(form);
 }
+function goBack() {
+    // Usa el método go(-1) del router para volver a la página anterior
+    router.go(-1);
+  }
 function checkForm(){
 
 }
@@ -42,6 +47,9 @@ function checkForm(){
             <form @submit.prevent="submit">
                 <div class="main-title">
                     <h2>
+                        <button type="button" @click="goBack()">
+                            <ion-icon name="arrow-back-outline"></ion-icon>
+                        </button>
                         Solicitud de Vacaciones
                     </h2>
                 </div>
@@ -68,11 +76,16 @@ function checkForm(){
                         variant="outlined"
                     ></v-textarea>
                 </div>
-                <VueDatePicker 
-                    v-model="dateSelect" 
-                    :range="{ minRange: 1 }" 
-                    :enable-time-picker="false" 
-                    ></VueDatePicker>
+                <div class="input-container">
+                    <div class="title">
+                        Fechas a elegir
+                    </div>
+                    <VueDatePicker 
+                        v-model="dateSelect" 
+                        :range="{ minRange: 1 }" 
+                        :enable-time-picker="false" 
+                        ></VueDatePicker>
+                </div>
                 <div class="btn-wrapper">
                     <v-btn class="me-4 px-8 text-white submit-pill" type="submit" rounded="pill">
                         Enviar Solicitud
@@ -89,7 +102,18 @@ function checkForm(){
     border-radius: 1rem;
     padding: 1.3rem;
     .main-title{
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
         h2{
+            ion-icon{
+                font-size: 1.3rem;
+            }
+            button{
+                height: fit-content;
+            }
+            display: flex;
+            align-items: center;
             font-size: 1.6rem;
             margin-bottom: 1rem;
             font-weight: 500;
