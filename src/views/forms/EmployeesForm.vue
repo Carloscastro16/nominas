@@ -48,6 +48,7 @@ async function submit(){
         console.error('Invalid Form')
         return
     }
+    let correo = generarCorreo(name.value, lastName.value)
     form.value = {
         name: name.value!,
         lastName: lastName.value,
@@ -57,12 +58,13 @@ async function submit(){
         hourlyWage: hourlyWage.value,
         range: rangeSelect.value,
         department: departmentSelect.value,
-        mail: generarCorreo(name.value, lastName.value),
+        mail: correo,
         totalHours: 15.25
     }
     console.log(form.value);
     try {
         response = await setEmployeeInfo(form.value);
+        
         console.log(response);
         closeDialog();
         Swal.fire({
