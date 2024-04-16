@@ -14,7 +14,8 @@ const employeesRef = collection(db, "employees");
 const payrollRef = collection(db, "payroll");
 const error = ref(null);
 
-// --- Employee Functions 
+
+
 export async function setEmployeeInfo(formValue: any){
     if(!formValue){
         return

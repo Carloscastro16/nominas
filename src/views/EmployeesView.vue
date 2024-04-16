@@ -9,8 +9,6 @@ function deleteEmployee(id: string) {
     deleteEmployeeById(id)
       .then((success) => {
         if (success) {
-          // Empleados eliminado con éxito, actualiza la lista de empleados
-          // Podrías llamar a getAllEmployees() nuevamente para actualizar la lista
           console.log('Empleado eliminado correctamente');
         } else {
           console.error('Error al eliminar empleado');
@@ -37,12 +35,17 @@ const headers = [
 let employees = ref([])
 let isLoading = ref(false)
 
-
 async function onGetAllEmployees() {
   let response = await getAllEmployees()
   employees.value = response
   console.log('Datos de todos', response)
 }
+function editItem(id: string) {
+    selectedEmployeeId.value = id; // Actualiza el valor de selectedEmployeeId con el ID del empleado seleccionado
+    dialog.value = true; // Abre el diálogo
+}
+
+
 onMounted(async () => {
   isLoading.value = true
   await onGetAllEmployees()
@@ -55,10 +58,6 @@ function getColor(range: any) {
   else return 'green'
 }
 
-function editItem(id: string) {
-    selectedEmployeeId.value = id;
-    dialog.value = true; // Muestra el diálogo del formulario de edición
-}
 
 
 function closeDialog() {
@@ -96,7 +95,8 @@ async function reloadData(event: any){
                 <p>Agregar Empleado</p>
               </button>
             </template>
-            <EmployeesForm @closeDialog="closeDialog()"> </EmployeesForm>
+            <EmployeesForm :data="selectedEmployeeId" @closeDialog="closeDialog"></EmployeesForm>
+
             
 
           </v-dialog>

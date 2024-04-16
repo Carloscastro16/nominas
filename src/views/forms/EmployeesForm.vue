@@ -1,11 +1,15 @@
 <script lang="ts" setup>
 import { ref, type Ref } from 'vue'
+import { onMounted } from 'vue'
+
 import '@vuepic/vue-datepicker/dist/main.css'
 import Swal from 'sweetalert2'
 //Importacion de datos
 import { ranges, departments } from '@/data/employeesData'
 import type { Employee } from '@/interfaces/employees'
 import { setEmployeeInfo } from '@/services/FirestoreFunctions'
+import { getEmployeeById, updateEmployeeById, deleteEmployeeById } from '@/services/FirestoreFunctions';
+
 let errorMessage = ref();
 const name: Ref<string | undefined> = ref()
 const curp: Ref<string | undefined> = ref()
@@ -16,6 +20,11 @@ const hourlyWage: Ref<string | undefined> = ref()
 const rangeSelect: Ref<string | undefined> = ref()
 const departmentSelect: Ref<string | undefined> = ref()
 const emits = defineEmits(['closeDialog', 'submit'])
+
+
+
+let id =  defineProps<{data: string}>();
+
 let form: Ref<Employee> = ref({
     name: name.value,
     lastName: lastName.value,
@@ -39,6 +48,11 @@ function generarCorreo(nombre: any, apellido: any) {
     
     return correo;
 }
+
+
+
+
+
 async function submit(){
     let response: any;
     console.log('Form values')
@@ -63,9 +77,15 @@ async function submit(){
     }
     console.log(form.value);
     try {
-        response = await setEmployeeInfo(form.value);
         
-        console.log(response);
+        if (id.data) {
+            await updateEmployeeById(id.data, form.value);
+            console.log('Empleado actualizado correctamente');
+        } else {
+            // Si no hay un ID de empleado seleccionado, crea un nuevo empleado
+            await setEmployeeInfo(form.value);
+            console.log('Empleado creado correctamente');
+        }
         closeDialog();
         Swal.fire({
             title: 'Exito!',
@@ -78,6 +98,8 @@ async function submit(){
         emits('submit', false);
     }
 }
+
+
 function checkForm() {
   const nameValue = name.value;
   const lastNameValue = lastName.value;
@@ -147,13 +169,28 @@ function checkForm() {
   console.log('Formulario válido, enviar datos:', formValue);
   return true;
 }
-
+async function onGetEmployeeById(){
+    let response = await getEmployeeById(id.data)
+    name.value = response.name
+    lastName.value = response.lastName
+    curp.value = response.curp
+    rfc.value = response.rfc
+    imss.value = response.imss
+    hourlyWage.value = response.hourlyWage
+    rangeSelect.value = response.range
+    departmentSelect.value = response.department
+}
 
 const closeDialog = () => {
   // Emitir el evento al padre con los datos
     emits('closeDialog', false);
 };
 
+onMounted(async () => {
+  await onGetEmployeeById()
+  
+  
+})
 </script>
 <template>
     <div class="container">
@@ -161,7 +198,8 @@ const closeDialog = () => {
             <form @submit.prevent="submit">
                 <div class="main-title">
                     <h2>
-                        Empleados
+                        Empleados 
+                        {{  data }}
                     </h2>
                     <div class="btn-exit">
                         <button type="button" @click="closeDialog()">
