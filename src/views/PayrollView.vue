@@ -47,6 +47,7 @@ const headers = [
   { title: 'Faltas', key: 'faltas' },
   { title: 'Acciones', key: 'actions', sortable: false }
 ]
+
 const payrolls = ref([
   {
     rfcEmpleado: '12',
