@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, getDoc, getDocs } from "firebase/firestore"; 
+import { collection, doc, setDoc, getDoc, getDocs,deleteDoc  } from "firebase/firestore"; 
 import { getAuth, signInWithEmailAndPassword,signOut} from 'firebase/auth';
 import { auth } from '@/services/firebaseInit';
 import { ref } from 'vue';
@@ -25,6 +25,7 @@ export async function setEmployeeInfo(formValue: any){
         return
     }
 }
+
 export async function getEmployeeById(id: any){
     if(!id || id == null){
         return
@@ -46,14 +47,25 @@ export async function getEmployeeById(id: any){
         return
     }
 }
+export async function deleteEmployeeById(id: string) {
+    try {
+        await deleteDoc(doc(db, 'employees', id));
+        console.log('Employee deleted successfully');
+        return true;
+    } catch (error) {
+        console.error('Error deleting employee:', error);
+        return false;
+    }
+}
+
 export async function getAllEmployees(){
-    let response!: any;
+    let response: any[] = [];
     try {
         const querySnapshot = await getDocs(employeesRef);
         querySnapshot.forEach((doc: any) => {
-        // doc.data() is never undefined for query doc snapshots
-        response.push(doc.data());
-        console.log(doc.id, " => ", doc.data());
+            // doc.data() is never undefined for query doc snapshots
+            response.push(doc.data());
+            console.log(doc.id, " => ", doc.data());
         });
     } catch (error) {
         console.error(error)

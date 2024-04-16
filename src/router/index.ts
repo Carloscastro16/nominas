@@ -18,7 +18,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
-      meta: { requiresAuth: true } // indicar que esta ruta requiere autenticación
+      meta: { requiresAuth: true } 
     },
     {
       path: '/login',
@@ -75,9 +75,9 @@ router.beforeEach((to, from, next) => {
   
   onAuthStateChanged(auth, user => {
     if (requiresAuth && !user) {
-      next('/login'); // Redirigir a la página de inicio de sesión si no está autenticado
+      next('/login'); 
     } else {
-      next(); // Continuar navegando
+      next(); 
     }
   });
 });

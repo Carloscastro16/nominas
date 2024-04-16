@@ -1,43 +1,50 @@
 
 <script lang="ts" setup>
   import NavbarComponent from '@/components/assets/NavbarComponent.vue';
-  import { ref } from 'vue';
+  import { ref,onMounted   } from 'vue';
   import EmployeesForm from './forms/EmployeesForm.vue';
+  //Funcion de obtener datos//
+  import { getAllEmployees } from '@/services/FirestoreFunctions'
+  import { deleteEmployeeById } from '@/services/FirestoreFunctions';
+
+  function deleteEmployee(id: string) {
+  const confirmation = confirm('¿Estás seguro de que quieres eliminar este empleado?');
+  if (confirmation) {
+    deleteEmployeeById(id)
+      .then((success) => {
+        if (success) {
+          // Podrías llamar a getAllEmployees() nuevamente para actualizar la lista
+          console.log('Empleado eliminado correctamente');
+        } else {
+          console.error('Error al eliminar empleado');
+        }
+      })
+      .catch((error) => {
+        console.error('Error al eliminar empleado:', error);
+      });
+  }
+}
+
+  const employees = ref<any[]>([]);
+    onMounted(async () => {
+    employees.value = await getAllEmployees();
+  });
   let search = ref('')
   const headers = [
-    { title: 'Nombre Completo', key: 'fullname' },
-    { title: 'Puesto', key: 'range' },
-    { title: 'Departamento', key: 'department' },
-    { title: 'Correo', key: 'email' },
+  { title: 'CURP', key: 'curp' },
+    { title: 'Department', key: 'department' },
+    { title: 'Hourly Wage', key: 'hourlyWage' },
+    { title: 'IMMS', key: 'imss' },
+    { title: 'Last Name', key: 'lastName' },
     { title: 'Actions', key: 'actions', sortable: false },
   ]
-  const employees = [
-    {
-      fullname: 'Spinach',
-      range: 'Ingeniero',
-      department: 'Contruccion',
-      email: 'spinach@nomimas.com',
-      actions: 'Acciones',
-    },
-    {
-      fullname: 'Spinach',
-      range: 'Ingeniero',
-      department: 'Contruccion',
-      email: 'spinach@nomimas.com',
-      actions: 'Acciones',
-    },
-    {
-      fullname: 'Spinach',
-      range: 'Programador',
-      department: 'Contruccion',
-      email: 'spinach@nomimas.com',
-      actions: 'Acciones',
-    },
-  ]
+  //Aqui termina//
+
+
   let dialog = ref(false);
-  function getColor(range: any){
-    if (range == 'Ingeniero') return 'red'
-    else if (range == 'Programador') return 'orange'
+  function getColor(department: any){
+    if (department == 'Sistemas') return 'red'
+    else if (department == 'Programador') return 'orange'
     else return 'green'
   }
   function editItem(item: any){
@@ -67,6 +74,7 @@
             max-height="80vh"
             scrollable
           >
+          
             <template v-slot:activator="{ props: activatorProps }">
               <button>
                 <ion-icon name="add-outline" v-bind="activatorProps"></ion-icon>
@@ -84,12 +92,17 @@
           :headers="headers"
           :search="search" 
           :items="employees">
+          <template v-slot:item.department="{ value }">
+            <v-chip :color="getColor(value)">
+              {{ value }}
+            </v-chip>
+          </template>
           <template v-slot:item.actions="{ item }">
             <div class="actions">
               <button class="btn-edit" click="editItem(item)">
                 <ion-icon name="pencil-outline"></ion-icon>
               </button>
-              <button class="btn-delete" @click="deleteItem(item)">
+              <button class="btn-delete" @click="deleteEmployee(item.id)">
                 <ion-icon name="trash-outline"></ion-icon>
               </button>
             </div>
@@ -99,7 +112,6 @@
     </div>
   </div>
 </template>
-
 
 <style scoped lang="scss">
 
