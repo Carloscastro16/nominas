@@ -1,41 +1,31 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 let search = ref('');
+import { useRouter } from 'vue-router'
+import PayrollForm from './forms/PayrollForm.vue'
+import { getAllPayrolls } from '@/services/FirestoreFunctions'
+//Importacion de datos
+
+const router = useRouter()
+
 const headers = [
-  { title: 'Empleado', key: 'empleado' },
-  { title: 'No. Nómina', key: 'nomina' },
-  { title: 'Periodo del', key: 'periodo' },
-  { title: 'Días trabajados', key: 'dias' },
+  { title: 'No. Nómina', key: 'uid' },
+  { title: 'No. Empleado', key: 'rfcEmpleado'},
+  { title: 'IMSS', key: 'imss' },
+  { title: 'Salario Neto', key: 'salarioNeto' },
   { title: 'Faltas', key: 'faltas' },
   { title: 'Acciones', key: 'actions', sortable: false },
 ]
-const employees = ref([
+const payrolls = ref([
   {
-    "empleado": "12",
-    "nomina": "5",
-    "periodo": "01/mar./2024 al 15/mar./2024",
-    "dias": "15.25",
-    "faltas": "0",
-    "actions": "Acciones"
-  },
-  {
-    "empleado": "11",
-    "nomina": "5",
-    "periodo": "01/mar./2024 al 15/mar./2024",
-    "dias": "15.25",
-    "faltas": "0",
-    "actions": "Acciones"
-  },
-  {
-    "empleado": "2132",
-    "nomina": "5",
-    "periodo": "01/mar./2024 al 15/mar./2024",
-    "dias": "15.25",
-    "faltas": "0",
-    "actions": "Acciones"
+    "rfcEmpleado": "12",
+    "uid": "5",
+    "imss": "01/mar./2024 al 15/mar./2024",
+    "salario neto": "15.25",
+    "faltas": "0"
   }
 ])
-
+let dialog = ref(false);
 
 function getColor(range: any) {
   if (range == 'Ingeniero') return 'red'
@@ -48,7 +38,24 @@ function editItem(item: any) {
 function deleteItem(item: any) {
   return item
 }
-
+function redirectTo(query: string) {
+  router.push(query)
+}
+function closeDialog(){
+    dialog.value = false
+}
+async function onGetAllPayroll(){
+    let response = await getAllPayrolls()
+    payrolls.value = response
+    console.log('Datos de todos', response);
+    console.log('Payrolles de todos', payrolls.value);
+}
+let isLoading = ref(false);
+onMounted(async () => {
+    isLoading.value = true;
+    await onGetAllPayroll();
+    isLoading.value = false;
+  })
 </script>
 
 <template>
@@ -60,17 +67,32 @@ function deleteItem(item: any) {
           <input type="text" v-model="search" placeholder="Search">
         </div>
         <div class="add-btn">
-          <button>
-            <ion-icon name="add-outline"></ion-icon>
-          </button>
+          <v-dialog
+            v-model="dialog"
+            max-width="80%"
+            max-height="80vh"
+            scrollable
+          >
+            <template v-slot:activator="{ props: activatorProps }">
+              <button v-bind="activatorProps">
+                <ion-icon name="add-outline"></ion-icon>
+              </button>
+            </template>
+            <PayrollForm @closeDialog="closeDialog()">
+
+            </PayrollForm>
+          </v-dialog>
         </div>
       </div>
       <div class="table-container">
-        <v-data-table class="table" :headers="headers" :search="search" :items="employees">
+        <v-data-table class="table" :headers="headers" :search="search" :items="payrolls">
           <template v-slot:item.actions="{ item }">
             <div class="actions">
               <button class="btn-edit" click="editItem(item)">
-                <ion-icon name="pencil-outline"></ion-icon>
+                <ion-icon name="create-outline"></ion-icon>
+              </button>
+              <button class="btn-edit" click="editItem(item)">
+                <ion-icon name="document-text-outline"></ion-icon>
               </button>
               <button class="btn-delete" @click="deleteItem(item)">
                 <ion-icon name="trash-outline"></ion-icon>

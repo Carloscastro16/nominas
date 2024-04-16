@@ -25,6 +25,7 @@ let form: Ref<Employee> = ref({
     range: rangeSelect.value,
     department: departmentSelect.value,
     hourlyWage: hourlyWage.value,
+    totalHours: 15.25
 })
 function generarCorreo(nombre, apellido) {
     // Obtener las primeras 3 letras del nombre y convertirlas a minúsculas
@@ -50,7 +51,8 @@ async function submit(){
         range: rangeSelect.value,
         department: departmentSelect.value,
         hourlyWage: hourlyWage.value,
-        mail: generarCorreo(name.value, lastName.value)
+        mail: generarCorreo(name.value, lastName.value),
+        totalHours: 15.25
     }
     console.log(form.value);
     closeDialog();

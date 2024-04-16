@@ -12,6 +12,7 @@ const permitsRef = collection(db, "permits");
 const vacationsRef = collection(db, "vacations");
 const settingsRef = collection(db, "settings");
 const employeesRef = collection(db, "employees");
+const payrollRef = collection(db, "payroll");
 const error = ref(null);
 
 // --- Employee Functions 
@@ -64,7 +65,22 @@ export async function getAllEmployees(){
         console.error(error)
     }
 }
-
+export async function getEmployeeByRfc(rfc: string){
+    let response: Employee | undefined = {};
+    try {
+        console.log('RFC agregado', rfc)
+        const q = query(collection(db, "employees"), where("rfc", "==", rfc));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            const data = { ...doc.data(), id: doc.id }
+            console.log(doc.id, " => ", doc.data());
+            response = data;
+        });
+        return response;
+    } catch (error) {
+        console.error(error)
+    }
+}
 // --- Vacations Functions 
 export async function setRequestVacations(formValue: any){
     if(!formValue){
@@ -206,6 +222,41 @@ export async function getSettingsByUser(id: any){
     }
 }
 
+// --- Nominas ---
+export async function getAllPayrolls(){
+    const response: any[] = [];
+    try {
+        const q = query(collection(db, "payroll"));
+        
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+        // doc.data() is never undefined for query doc snapshots
+            const data = { ...doc.data(), uid: doc.id }
+            console.log(doc.id, " => ", doc.data());
+            response.push(data);
+        });
+        return response;
+    } catch (error) {
+        console.error(error)
+    }
+}
+export async function setPayrollInfo(formValue: any){
+    if(!formValue){
+        return
+    }
+    console.log('Informacion de nomina', formValue);
+    try {
+        const response = await setDoc(doc(payrollRef), formValue);
+        console.log(response);
+        return response;
+    } catch (error) {
+        console.error(error);
+        return
+    }
+}
+
+
+// --- Autenticaciones ---
 
 export async function Login(email: string , password: string, router: Router){
     error.value = null;
