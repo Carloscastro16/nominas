@@ -2,7 +2,30 @@
 import { ref, onMounted } from 'vue'
 import EmployeesForm from './forms/EmployeesForm.vue'
 import { getAllEmployees } from '@/services/FirestoreFunctions'
+import { deleteEmployeeById } from '@/services/FirestoreFunctions';
+function deleteEmployee(id: string) {
+  const confirmation = confirm('¿Estás seguro de que quieres eliminar este empleado?');
+  if (confirmation) {
+    deleteEmployeeById(id)
+      .then((success) => {
+        if (success) {
+          // Empleados eliminado con éxito, actualiza la lista de empleados
+          // Podrías llamar a getAllEmployees() nuevamente para actualizar la lista
+          console.log('Empleado eliminado correctamente');
+        } else {
+          console.error('Error al eliminar empleado');
+        }
+      })
+      .catch((error) => {
+        console.error('Error al eliminar empleado:', error);
+      });
+  }
+}
+
+
 let search = ref('')
+let selectedEmployeeId = ref('');
+
 const headers = [
   { title: 'Nombre Completo', key: 'name' },
   { title: 'Puesto', key: 'range' },
@@ -12,6 +35,8 @@ const headers = [
 ]
 let employees = ref([])
 let isLoading = ref(false)
+
+
 async function onGetAllEmployees() {
   let response = await getAllEmployees()
   employees.value = response
@@ -28,12 +53,13 @@ function getColor(range: any) {
   else if (range == 'Programador') return 'orange'
   else return 'green'
 }
-function editItem(item: any) {
-  return item
+
+function editItem(id: string) {
+    selectedEmployeeId.value = id;
+    dialog.value = true; // Muestra el diálogo del formulario de edición
 }
-function deleteItem(item: any) {
-  return item
-}
+
+
 function closeDialog() {
   dialog.value = false
 }
@@ -61,6 +87,8 @@ function closeDialog() {
               </button>
             </template>
             <EmployeesForm @closeDialog="closeDialog()"> </EmployeesForm>
+            
+
           </v-dialog>
         </div>
       </div>
@@ -75,7 +103,7 @@ function closeDialog() {
         >
           <template v-slot:item.actions="{ item }">
             <div class="actions">
-              <button class="btn-edit" click="editItem(item)">
+              <button class="btn-edit" @click="editItem(item.id)">
                 <ion-icon name="pencil-outline"></ion-icon>
               </button>
               <button class="btn-delete" @click="deleteEmployee(item.id)">

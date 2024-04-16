@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, getDoc, getDocs, query, where, deleteDoc } from "firebase/firestore"; 
+import { collection, doc, setDoc, getDoc, getDocs, query, where, deleteDoc,updateDoc  } from "firebase/firestore"; 
 import { getAuth, signInWithEmailAndPassword,signOut} from 'firebase/auth';
 import { auth } from '@/services/firebaseInit';
 import { ref } from 'vue';
@@ -47,6 +47,22 @@ export async function getEmployeeById(id: any){
     } catch (error) {
         console.error(error);
         return
+    }
+}
+export async function updateEmployeeById(id: string, newData: any) {
+    if (!id || !newData) {
+        console.error('Invalid parameters');
+        return false;
+    }
+
+    try {
+        const employeeDocRef = doc(db, 'employees', id);
+        await updateDoc(employeeDocRef, newData);
+        console.log('Employee data updated successfully');
+        return true;
+    } catch (error) {
+        console.error('Error updating employee data:', error);
+        return false;
     }
 }
 export async function deleteEmployeeById(id: string) {
