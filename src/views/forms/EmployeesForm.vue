@@ -27,7 +27,7 @@ let form: Ref<Employee> = ref({
     hourlyWage: hourlyWage.value,
     totalHours: 15.25
 })
-function generarCorreo(nombre, apellido) {
+function generarCorreo(nombre: any, apellido: any) {
     // Obtener las primeras 3 letras del nombre y convertirlas a minúsculas
     const nombreAbreviado = nombre.substring(0, 3).toLowerCase();
     

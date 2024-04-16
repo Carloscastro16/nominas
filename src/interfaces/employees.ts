@@ -10,4 +10,5 @@ export interface Employee {
     department?: string;
     hourlyWage?: string;
     mail?: string;
+    totalHours?: any;
 }

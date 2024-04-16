@@ -15,7 +15,7 @@ const headers = [
   {
     title: 'Por Hora',
     key: 'hourlyWage',
-    value: (item) => {
+    value: (item: any) => {
       let numero = Math.floor(item.hourlyWage)
       return `$${numero}`
     }
@@ -23,7 +23,7 @@ const headers = [
   {
     title: 'IMSS',
     key: 'imss',
-    value: (item) => {
+    value: (item: any) => {
       let numero = Math.floor(item.imss)
       return `$${numero}`
     }
@@ -31,7 +31,7 @@ const headers = [
   {
     title: 'Salario Neto',
     key: 'salarioNeto',
-    value: (item) => {
+    value: (item: any) => {
       let numero = Math.floor(item.salarioNeto)
       return `$${numero}`
     }
@@ -39,7 +39,7 @@ const headers = [
   {
     title: 'Salario Bruto',
     key: 'salarioBruto',
-    value: (item) => {
+    value: (item: any) => {
       let numero = Math.floor(item.salarioBruto)
       return `$${numero}`
     }

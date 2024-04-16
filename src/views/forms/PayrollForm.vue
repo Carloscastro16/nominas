@@ -22,6 +22,7 @@ async function onGetAllEmployees() {
 function calcularNomina(empleado: any) {
     let totalNomina = 0;
     console.log(empleado);
+    
     empleado = {
         ...empleado,
         totalHours: empleado.totalHours - faltas.value!

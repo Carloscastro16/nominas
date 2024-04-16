@@ -62,6 +62,8 @@ function redirectTo(query: string) {
 
 <style lang="scss" scoped>
 .side{
+
+  z-index: 9999;
     width: 190px;
     height: 100vh;
     padding: 1rem;
