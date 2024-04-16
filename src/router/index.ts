@@ -10,7 +10,10 @@ import VacationsFormView from '@/views/forms/VacationsForm.vue'
 import PermitFormView from '@/views/forms/PermitForm.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import PayrollForm from '@/views/forms/PayrollForm.vue'
-
+import PayrollPdfView from '@/views/PayrollPdfView.vue'
+import DashboardView from '@/views/DashboardView.vue'
+import { useRouter } from 'vue-router'
+const routerManager = useRouter()
 const auth = getAuth();
 
 const router = createRouter({
@@ -30,7 +33,7 @@ const router = createRouter({
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: EmployeesView,
+      component: DashboardView,
       meta: { requiresAuth: true }
     },
     {
@@ -61,6 +64,12 @@ const router = createRouter({
       path: '/payroll/generator',
       name: 'generator',
       component: PayrollForm,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/payroll/:id',
+      name: 'generator',
+      component: PayrollPdfView,
       meta: { requiresAuth: true }
     },
     {

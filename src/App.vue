@@ -2,9 +2,7 @@
 import NavbarComponent from '@/components/assets/NavbarComponent.vue';
 import { computed, ref, type Ref } from 'vue';
 import { RouterView, useRoute } from 'vue-router'
-import { useRouter } from 'vue-router';
 import SidebarComponent from './components/assets/SidebarComponent.vue';
-const router = useRouter()
 const route = useRoute();
 
 let isLoginPage = ref(false);

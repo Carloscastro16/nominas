@@ -6,7 +6,7 @@ import Swal from 'sweetalert2'
 import { ranges, departments } from '@/data/employeesData'
 import type { Employee } from '@/interfaces/employees'
 import { setEmployeeInfo } from '@/services/FirestoreFunctions'
-
+let errorMessage = ref();
 const name: Ref<string | undefined> = ref()
 const curp: Ref<string | undefined> = ref()
 const rfc: Ref<string | undefined> = ref()
@@ -27,7 +27,7 @@ let form: Ref<Employee> = ref({
     hourlyWage: hourlyWage.value,
     totalHours: 15.25
 })
-function generarCorreo(nombre, apellido) {
+function generarCorreo(nombre: any, apellido: any) {
     // Obtener las primeras 3 letras del nombre y convertirlas a minúsculas
     const nombreAbreviado = nombre.substring(0, 3).toLowerCase();
     
@@ -42,6 +42,12 @@ function generarCorreo(nombre, apellido) {
 async function submit(){
     let response: any;
     console.log('Form values')
+    let validForm = checkForm();
+    if(!validForm){
+        errorMessage.value = 'Faltan datos en el formulario'
+        console.error('Invalid Form')
+        return
+    }
     form.value = {
         name: name.value!,
         lastName: lastName.value,
@@ -64,14 +70,82 @@ async function submit(){
             icon: 'success',
             confirmButtonText: 'Cool'
         })
+        emits('submit', true);
     } catch (error) {
         console.error('Error al crear el empleado:', error)
+        emits('submit', false);
     }
 }
-function checkForm(){
+function checkForm() {
+  const nameValue = name.value;
+  const lastNameValue = lastName.value;
+  const curpValue = curp.value;
+  const rfcValue = rfc.value;
+  const imssValue = imss.value;
+  const hourlyWageValue = hourlyWage.value;
+  const rangeValue = rangeSelect.value;
+  const departmentValue = departmentSelect.value;
 
-    closeDialog()
+  if (!nameValue || nameValue.trim() === '') {
+    console.log('Por favor, ingrese un nombre válido.');
+    return false;
+  }
+
+  if (!lastNameValue || lastNameValue.trim() === '') {
+    console.log('Por favor, ingrese un apellido válido.');
+    return false;
+  }
+
+  if (!curpValue || curpValue.trim() === '') {
+    console.log('Por favor, ingrese una CURP válida.');
+    return false;
+  }
+
+  if (!rfcValue || rfcValue.trim() === '') {
+    console.log('Por favor, ingrese un RFC válido.');
+    return false;
+  }
+
+  if (!imssValue || imssValue.trim() === '') {
+    console.log('Por favor, ingrese un número de IMSS válido.');
+    return false;
+  }
+
+  if (!hourlyWageValue || isNaN(parseFloat(hourlyWageValue))) {
+    console.log('Por favor, ingrese un salario por hora válido.');
+    return false;
+  }
+
+  if (!rangeValue || rangeValue.trim() === '') {
+    console.log('Por favor, seleccione un rango válido.');
+    return false;
+  }
+
+  if (!departmentValue || departmentValue.trim() === '') {
+    console.log('Por favor, seleccione un departamento válido.');
+    return false;
+  }
+
+  const mailValue = generarCorreo(nameValue, lastNameValue);
+  const totalHoursValue = 15.25;
+
+  const formValue = {
+    name: nameValue,
+    lastName: lastNameValue,
+    curp: curpValue,
+    rfc: rfcValue,
+    imss: imssValue,
+    hourlyWage: parseFloat(hourlyWageValue),
+    range: rangeValue,
+    department: departmentValue,
+    mail: mailValue,
+    totalHours: totalHoursValue
+  };
+
+  console.log('Formulario válido, enviar datos:', formValue);
+  return true;
 }
+
 
 const closeDialog = () => {
   // Emitir el evento al padre con los datos
@@ -219,7 +293,9 @@ const closeDialog = () => {
                         type="number"
                     ></v-text-field>
                 </div>
-                
+                <div class="error-message">
+                    {{ errorMessage }}
+                </div>
                 <div class="btn-wrapper">
                     <button class="submit-pill px-8 py-1 rounded text-white">
                         Enviar Solicitud
@@ -231,6 +307,10 @@ const closeDialog = () => {
 </template>
 
 <style scoped lang="scss">
+.error-message{
+    color: #ea2222;
+    font-size: .8rem;
+}
 .form-container{
     background: #fff;
     border-radius: 1rem;
@@ -282,8 +362,9 @@ const closeDialog = () => {
     justify-content: flex-end;
     .submit-pill{
         background: var(--primary-color);
+        border: 1.5px solid var(--primary-color);
         &:hover{
-            background: #fff !important;
+            background: transparent !important;
             color: var(--primary-color) !important;
             border: 1.5px solid var(--primary-color)
         }

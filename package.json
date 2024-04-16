@@ -18,6 +18,7 @@
   "dependencies": {
     "@vuepic/vue-datepicker": "^8.4.0",
     "firebase": "^10.10.0",
+    "html2pdf.js": "^0.10.1",
     "pinia": "^2.1.7",
     "sweetalert2": "^11.10.7",
     "vee-validate": "^4.12.6",

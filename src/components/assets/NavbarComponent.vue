@@ -30,6 +30,7 @@ nav{
     justify-content: center;
     position: relative;
     background-color: #FCFAFA;
+    z-index: 9999;
     .title{
         width: 100%;
         h1{

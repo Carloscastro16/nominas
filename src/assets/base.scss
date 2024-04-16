@@ -25,13 +25,24 @@
                 align-items: center;
                 justify-content: center;
                 background-color: #ff735c;
+                border: solid 1px var(--primary-color);
                 color: #fff;
                 height: 100%;
                 padding: 0.8rem;
                 border-radius: 1rem;
-
+                width: fit-content;
+                gap: .5rem;
+                p{
+                    white-space: nowrap;
+                    margin: 0;
+                    font-size: .8rem;
+                }
                 ion-icon {
                     font-size: 1.3rem;
+                }
+                &:hover{
+                    background-color: transparent;
+                    color: var(--primary-color);
                 }
             }
         }

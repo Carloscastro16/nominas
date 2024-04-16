@@ -30,6 +30,7 @@ const headers = [
   { title: 'Nombre Completo', key: 'name' },
   { title: 'Puesto', key: 'range' },
   { title: 'Departamento', key: 'department' },
+  { title: 'RFC', key: 'rfc' },
   { title: 'Correo', key: 'mail' },
   { title: 'Actions', key: 'actions', sortable: false }
 ]
@@ -63,6 +64,14 @@ function editItem(id: string) {
 function closeDialog() {
   dialog.value = false
 }
+async function reloadData(event: any){
+  if(event){
+    await onGetAllEmployees();
+    return
+  }else{
+    return
+  }
+}
 </script>
 
 <template>
@@ -82,8 +91,9 @@ function closeDialog() {
           >
           
             <template v-slot:activator="{ props: activatorProps }">
-              <button>
-                <ion-icon name="add-outline" v-bind="activatorProps"></ion-icon>
+              <button type="button" v-bind="activatorProps">
+                <ion-icon name="add-outline" ></ion-icon>
+                <p>Agregar Empleado</p>
               </button>
             </template>
             <EmployeesForm @closeDialog="closeDialog()"> </EmployeesForm>

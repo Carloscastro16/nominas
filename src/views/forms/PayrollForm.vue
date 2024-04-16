@@ -1,21 +1,32 @@
 <script lang="ts" setup>
-import { ref, type Ref } from 'vue'
+import { ref, onMounted , type Ref } from 'vue'
 import '@vuepic/vue-datepicker/dist/main.css'
 import Swal from 'sweetalert2'
-import { getEmployeeByRfc, setPayrollInfo } from '@/services/FirestoreFunctions'
+import { getEmployeeByRfc, setPayrollInfo, getAllEmployees } from '@/services/FirestoreFunctions'
 //Importacion de datos
 
-/* const dateSelect: Ref<string | undefined> = ref(); */
-const employeeRfc: Ref<string | undefined> = ref();
+let errorMessage: Ref<string | undefined> = ref();
+let employeeRfc: Ref<string | undefined> = ref();
+let employeesData = ref();
 let faltas: Ref<string | undefined> = ref();
 const emits = defineEmits(['closeDialog', 'submit'])
 const closeDialog = () => {
   // Emitir el evento al padre con los datos
     emits('closeDialog', false);
 };
+async function onGetAllEmployees() {
+  let response = await getAllEmployees()
+  employeesData.value = response
+  console.log('Datos de todos', response)
+}
 function calcularNomina(empleado: any) {
     let totalNomina = 0;
     console.log(empleado);
+    
+    empleado = {
+        ...empleado,
+        totalHours: empleado.totalHours - faltas.value!
+    }
     const salarioBruto = calcularSalarioBruto(empleado);
     const imss = calcularDeduccionesIMSS(empleado)
     const salarioNeto = calcularSalarioNeto(salarioBruto, imss);
@@ -29,7 +40,9 @@ function calcularNomina(empleado: any) {
         isr: salarioNeto.isr,
         imss: imss,
         faltas: faltas.value,
-        totalHours: empleado.totalHours
+        totalHours: empleado.totalHours - faltas.value!,
+        hourlyWage: empleado.hourlyWage,
+        rfcEmpleado: empleado.rfc
     };
     console.log('Total: ',nomina)
     return nomina
@@ -58,7 +71,7 @@ function calcularISR(salarioGravable: number) {
 }
 
 function calcularSalarioBruto(empleado: any): number {
-    const salarioBruto = empleado.hourlyWage * empleado.totalHours;
+    const salarioBruto = (empleado.hourlyWage * 8) * empleado.totalHours;
     console.log('Bruto', salarioBruto)
     return salarioBruto;
 }
@@ -75,7 +88,13 @@ function calcularDeduccionesIMSS(empleado: any): number {
 async function submit(){
     try {
         let nomina: any;
-        let response = await getEmployeeByRfc(employeeRfc.value);
+        let validForm = await checkForm();
+        if(!validForm){
+            errorMessage.value = 'Faltan datos en el formulario'
+            console.error('Invalid Form')
+            return
+        }
+        let response: any = await getEmployeeByRfc(employeeRfc.value!);
         console.log('Usuario obtenido', response);
         if(Object.keys(response).length === 0){
             closeDialog();
@@ -92,7 +111,6 @@ async function submit(){
         
         nomina = {
             ...values, 
-            rfcEmpleado: response.rfc
         }
         console.log(nomina);
         await setPayrollInfo(nomina);
@@ -117,10 +135,29 @@ async function submit(){
         })
     }
 }
-function checkForm(){
+function checkForm() {
+  const faltasValue = faltas.value;
+  const rfcEmpleadoValue = employeeRfc.value;
 
+  if (!faltasValue || faltasValue.trim() === '') {
+    console.log('Por favor, ingrese un número válido de faltas.');
+    return;
+  }
+
+  if (!rfcEmpleadoValue || rfcEmpleadoValue.trim() === '') {
+    console.log('Por favor, ingrese un RFC de empleado válido.');
+    return;
+  }
+
+  const nomina = {
+    faltas: faltasValue,
+    rfcEmpleado: rfcEmpleadoValue
+  };
+  return nomina;
 }
-
+onMounted(async () => {
+  await onGetAllEmployees()
+})
 </script>
 <template>
     <div class="container">
@@ -139,16 +176,18 @@ function checkForm(){
                 <div class="employees-data">
                     <div class="input-container">
                         <div class="title">
-                            Id de Empleado
+                            RFC de Empleado
                         </div>
-                        <v-text-field
-                            v-model="employeeRfc"
-                            item-title="rfc"
-                            label="rfc"
-                            return-object
-                            single-line
-                            variant="outlined"
-                        ></v-text-field>
+                        <v-select 
+                            :items="employeesData" 
+                            v-model="employeeRfc" 
+                            item-title="rfc" 
+                            label="RFC"
+                            variant="outlined">
+                            <template v-slot:item="{ props, item }">
+                                <v-list-item v-bind="props" :subtitle="item.raw.name"></v-list-item>
+                            </template>
+                        </v-select>
                     </div>
                     <div class="input-container">
                         <div class="title">
@@ -166,6 +205,9 @@ function checkForm(){
                     </div>
 
                 </div>
+                <div class="error-message">
+                    {{ errorMessage }}
+                </div>
                 <div class="btn-wrapper">
                     <v-btn class="me-4 px-8 text-white submit-pill" type="submit" rounded="pill">
                         Generar Nomina
@@ -177,6 +219,10 @@ function checkForm(){
 </template>
 
 <style scoped lang="scss">
+.error-message{
+    color: #ea2222;
+    font-size: .8rem;
+}
 .form-container{
     background: #fff;
     border-radius: 1rem;
