@@ -16,7 +16,12 @@ let form: Ref<Permit> = ref({
     motive: motive.value!,
     date: dateSelect.value!
 })
-
+const permitTypes = [
+    'Vacaciones',
+    'Permiso',
+    'Enfermedad',
+    'Urgente'
+]
 function submit(){
     console.log('Form values')
     form.value = {

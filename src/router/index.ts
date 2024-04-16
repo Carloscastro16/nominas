@@ -8,6 +8,7 @@ import SettingsView from '@/views/SettingsView.vue'
 import PermitView from '@/views/PermitView.vue'
 import VacationsFormView from '@/views/forms/VacationsForm.vue'
 import PermitFormView from '@/views/forms/PermitForm.vue'
+import NotFoundView from '@/views/NotFoundView.vue'
 
 const auth = getAuth();
 
@@ -16,14 +17,20 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      name: 'default',
+      redirect: '/dashboard',
       meta: { requiresAuth: true } // indicar que esta ruta requiere autenticación
     },
     {
       path: '/login',
       name: 'login',
       component: LoginView
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: EmployeesView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/employees',
@@ -66,6 +73,11 @@ const router = createRouter({
       name: 'urgent-request',
       component: PermitFormView,
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/:catchAll(.*)',
+      name: 'not-found',
+      component: NotFoundView,
     },
   ]
 })
