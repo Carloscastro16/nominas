@@ -5,9 +5,9 @@ import Swal from 'sweetalert2'
 import { getEmployeeByRfc, setPayrollInfo, getAllEmployees } from '@/services/FirestoreFunctions'
 //Importacion de datos
 
-const errorMessage: Ref<string | undefined> = ref();
-const employeeRfc: Ref<string | undefined> = ref();
-const employeesData = ref();
+let errorMessage: Ref<string | undefined> = ref();
+let employeeRfc: Ref<string | undefined> = ref();
+let employeesData = ref();
 let faltas: Ref<string | undefined> = ref();
 const emits = defineEmits(['closeDialog', 'submit'])
 const closeDialog = () => {
@@ -24,7 +24,7 @@ function calcularNomina(empleado: any) {
     console.log(empleado);
     empleado = {
         ...empleado,
-        totalHours: empleado.totalHours - faltas.value
+        totalHours: empleado.totalHours - faltas.value!
     }
     const salarioBruto = calcularSalarioBruto(empleado);
     const imss = calcularDeduccionesIMSS(empleado)
@@ -39,7 +39,7 @@ function calcularNomina(empleado: any) {
         isr: salarioNeto.isr,
         imss: imss,
         faltas: faltas.value,
-        totalHours: empleado.totalHours - faltas.value,
+        totalHours: empleado.totalHours - faltas.value!,
         hourlyWage: empleado.hourlyWage,
         rfcEmpleado: empleado.rfc
     };
@@ -93,7 +93,7 @@ async function submit(){
             console.error('Invalid Form')
             return
         }
-        let response = await getEmployeeByRfc(employeeRfc.value);
+        let response: any = await getEmployeeByRfc(employeeRfc.value!);
         console.log('Usuario obtenido', response);
         if(Object.keys(response).length === 0){
             closeDialog();

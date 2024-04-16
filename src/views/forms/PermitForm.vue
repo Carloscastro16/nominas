@@ -3,9 +3,10 @@ import { ref, type Ref } from 'vue'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import Swal from 'sweetalert2'
+import { useRouter } from 'vue-router'
 //Importacion de datos
 import type { Permit } from '@/interfaces/permits'
-
+const router = useRouter()
 const dateSelect: Ref<string | undefined> = ref()
 const employeeId: Ref<string | undefined> = ref()
 const type: Ref<string | undefined> = ref()
@@ -41,6 +42,10 @@ function submit(){
 function checkForm(){
 
 }
+function goBack() {
+    // Usa el método go(-1) del router para volver a la página anterior
+    router.go(-1);
+  }
 </script>
 <template>
     <div class="container">
@@ -48,7 +53,10 @@ function checkForm(){
             <form @submit.prevent="submit">
                 <div class="main-title">
                     <h2>
-                        Solicitud de Vacaciones
+                        <button type="button" @click="goBack()">
+                            <ion-icon name="arrow-back-outline"></ion-icon>
+                        </button>
+                        Solicitud de Falta
                     </h2>
                 </div>
                 <div class="employee-data">
