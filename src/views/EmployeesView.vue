@@ -1,39 +1,28 @@
 
 <script lang="ts" setup>
-  import NavbarComponent from '@/components/assets/NavbarComponent.vue';
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import EmployeesForm from './forms/EmployeesForm.vue';
+  import { getAllEmployees } from '@/services/FirestoreFunctions'
   let search = ref('')
   const headers = [
-    { title: 'Nombre Completo', key: 'fullname' },
+    { title: 'Nombre Completo', key: 'name' },
     { title: 'Puesto', key: 'range' },
     { title: 'Departamento', key: 'department' },
-    { title: 'Correo', key: 'email' },
+    { title: 'Correo', key: 'mail' },
     { title: 'Actions', key: 'actions', sortable: false },
   ]
-  const employees = [
-    {
-      fullname: 'Spinach',
-      range: 'Ingeniero',
-      department: 'Contruccion',
-      email: 'spinach@nomimas.com',
-      actions: 'Acciones',
-    },
-    {
-      fullname: 'Spinach',
-      range: 'Ingeniero',
-      department: 'Contruccion',
-      email: 'spinach@nomimas.com',
-      actions: 'Acciones',
-    },
-    {
-      fullname: 'Spinach',
-      range: 'Programador',
-      department: 'Contruccion',
-      email: 'spinach@nomimas.com',
-      actions: 'Acciones',
-    },
-  ]
+  let employees = ref([])
+  let isLoading = ref(false);
+  async function onGetAllEmployees(){
+    let response = await getAllEmployees()
+    employees.value = response
+    console.log('Datos de todos', response);
+}
+  onMounted(async () => {
+    isLoading.value = true;
+    await onGetAllEmployees();
+    isLoading.value = false;
+  })
   let dialog = ref(false);
   function getColor(range: any){
     if (range == 'Ingeniero') return 'red'
@@ -83,7 +72,10 @@
           class="table" 
           :headers="headers"
           :search="search" 
-          :items="employees">
+          :items="employees"
+          loading-text="Loading... Please wait"
+          :loading = "isLoading"
+          >
           <template v-slot:item.actions="{ item }">
             <div class="actions">
               <button class="btn-edit" click="editItem(item)">

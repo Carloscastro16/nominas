@@ -15,7 +15,6 @@ const lastName: Ref<string | undefined> = ref()
 const hourlyWage: Ref<string | undefined> = ref()
 const rangeSelect: Ref<string | undefined> = ref()
 const departmentSelect: Ref<string | undefined> = ref()
-const motive: Ref<string | undefined> = ref()
 const emits = defineEmits(['closeDialog'])
 let form: Ref<Employee> = ref({
     name: name.value,
@@ -25,9 +24,20 @@ let form: Ref<Employee> = ref({
     imss: imss.value,
     range: rangeSelect.value,
     department: departmentSelect.value,
-    hourlyWage: motive.value,
+    hourlyWage: hourlyWage.value,
 })
-
+function generarCorreo(nombre, apellido) {
+    // Obtener las primeras 3 letras del nombre y convertirlas a minúsculas
+    const nombreAbreviado = nombre.substring(0, 3).toLowerCase();
+    
+    // Obtener el primer apellido y convertir la primera letra a minúscula
+    const primerApellido = apellido.split(' ')[0].toLowerCase();
+    
+    // Generar el correo electrónico combinando el nombre abreviado y el primer apellido
+    const correo = nombreAbreviado + '.' + primerApellido + '@mail.com';
+    
+    return correo;
+}
 async function submit(){
     let response: any;
     console.log('Form values')
@@ -39,7 +49,8 @@ async function submit(){
         imss: imss.value,
         range: rangeSelect.value,
         department: departmentSelect.value,
-        hourlyWage: motive.value,
+        hourlyWage: hourlyWage.value,
+        mail: generarCorreo(name.value, lastName.value)
     }
     console.log(form.value);
     closeDialog();
@@ -59,10 +70,12 @@ async function submit(){
 function checkForm(){
 
 }
+
 const closeDialog = () => {
   // Emitir el evento al padre con los datos
     emits('closeDialog', false);
 };
+
 </script>
 <template>
     <div class="container">
@@ -149,6 +162,7 @@ const closeDialog = () => {
                             return-object
                             single-line
                             variant="outlined"
+                            type="number"
                         ></v-text-field>
                     </div>
                 </div>
@@ -191,6 +205,8 @@ const closeDialog = () => {
                         Sueldo por Hora
                     </div>
                     <v-text-field
+                        prefix="$"
+                        suffix="MXN"
                         density="compact"
                         v-model="hourlyWage"
                         item-title="lastname"
@@ -198,6 +214,7 @@ const closeDialog = () => {
                         return-object
                         single-line
                         variant="outlined"
+                        type="number"
                     ></v-text-field>
                 </div>
                 <div class="btn-wrapper">

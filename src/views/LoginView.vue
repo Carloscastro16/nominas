@@ -26,9 +26,12 @@ const submit = handleSubmit((values) => {
   alert(JSON.stringify(values, null, 2))
 })
 const Enviar = async () => {
-  await Login(email.value, password.value,router);
-  
-
+    try {
+      await Login(email.value, password.value,router);
+      router.push('/dashboard')
+    } catch (error) {
+      console.error(error)
+    }
   }
 
 </script>
@@ -54,6 +57,7 @@ const Enviar = async () => {
               :counter="10"
               label="Password"
               class="input-container font-weight-bold"
+              type="password"
             ></v-text-field>
             <v-btn class="me-4 px-8 text-white submit-pill" @click="Enviar" type="submit" rounded="pill">
               submit

@@ -6,7 +6,6 @@ export default function useDrawer() {
 
   const toggleRail = (state: boolean) => {
     rail.value = state;
-    console.log('Side Status',rail.value)
   };
 
   return {

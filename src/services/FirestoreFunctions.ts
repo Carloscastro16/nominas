@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, getDoc, getDocs } from "firebase/firestore"; 
+import { collection, doc, setDoc, getDoc, getDocs, query, where } from "firebase/firestore"; 
 import { getAuth, signInWithEmailAndPassword,signOut} from 'firebase/auth';
 import { auth } from '@/services/firebaseInit';
 import { ref } from 'vue';
@@ -7,6 +7,7 @@ import type { Router } from 'vue-router';
 // used for the firestore refs
 import { db } from '@/services/firebaseInit'
 import HomeView from "@/views/HomeView.vue";
+import type { Employee } from "@/interfaces/employees";
 const permitsRef = collection(db, "permits");
 const vacationsRef = collection(db, "vacations");
 const settingsRef = collection(db, "settings");
@@ -47,19 +48,21 @@ export async function getEmployeeById(id: any){
     }
 }
 export async function getAllEmployees(){
-    let response!: any;
+    const response: Employee[] | undefined = [];
     try {
-        const querySnapshot = await getDocs(employeesRef);
-        querySnapshot.forEach((doc: any) => {
+        const q = query(collection(db, "employees"));
+        
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
         // doc.data() is never undefined for query doc snapshots
-        response.push(doc.data());
-        console.log(doc.id, " => ", doc.data());
+            const data = { ...doc.data(), id: doc.id }
+            console.log(doc.id, " => ", doc.data());
+            response.push(data);
         });
+        return response;
     } catch (error) {
         console.error(error)
     }
-    console.log(response)
-    return response;
 }
 
 // --- Vacations Functions 

@@ -2,16 +2,16 @@
 import { ref } from 'vue';
 let search = ref('');
 const headers = [
-  { title: 'Puesto', key: 'puesto' },
+  { title: 'Empleado', key: 'empleado' },
   { title: 'No. Nómina', key: 'nomina' },
   { title: 'Periodo del', key: 'periodo' },
   { title: 'Días trabajados', key: 'dias' },
   { title: 'Faltas', key: 'faltas' },
   { title: 'Acciones', key: 'actions', sortable: false },
 ]
-const employees = [
+const employees = ref([
   {
-    "puesto": "SISTEMAS",
+    "empleado": "12",
     "nomina": "5",
     "periodo": "01/mar./2024 al 15/mar./2024",
     "dias": "15.25",
@@ -19,7 +19,7 @@ const employees = [
     "actions": "Acciones"
   },
   {
-    "puesto": "SISTEMAS",
+    "empleado": "11",
     "nomina": "5",
     "periodo": "01/mar./2024 al 15/mar./2024",
     "dias": "15.25",
@@ -27,14 +27,15 @@ const employees = [
     "actions": "Acciones"
   },
   {
-    "puesto": "SISTEMAS",
+    "empleado": "2132",
     "nomina": "5",
     "periodo": "01/mar./2024 al 15/mar./2024",
     "dias": "15.25",
     "faltas": "0",
     "actions": "Acciones"
   }
-]
+])
+
 
 function getColor(range: any) {
   if (range == 'Ingeniero') return 'red'

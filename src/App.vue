@@ -14,8 +14,6 @@ function getRoute() {
   const path = computed(() => route.path)
   let stringPath = path.value.toString()
   let pathValue: Ref<any> = ref()
-  console.log('path original', path)
-  console.log('path pasado a string', stringPath)
   switch (stringPath) {
     case '/dashboard':
     pathFinalValue.value = 'Dashboard'
@@ -114,7 +112,7 @@ function getRoute() {
       }]
       break;
     default:
-    pathFinalValue.value = 'Permisos'
+    pathFinalValue.value = 'dashboard'
       pathValue.value = [{
         title: 'Permisos',
         disabled: false,
