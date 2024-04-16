@@ -1,69 +1,53 @@
 <script lang="ts" setup>
-import { ref, type Ref } from 'vue'
-import VueDatePicker from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
-import Swal from 'sweetalert2'
-//Importacion de datos
+import { ref, defineEmits } from 'vue'
+import { setEmployeeInfo } from '@/services/FirestoreFunctions'
 import { ranges, departments } from '@/data/employeesData'
 import type { Employee } from '@/interfaces/employees'
-import { setEmployeeInfo } from '@/services/FirestoreFunctions'
-
-const name: Ref<string | undefined> = ref()
-const curp: Ref<string | undefined> = ref()
-const rfc: Ref<string | undefined> = ref()
-const imss: Ref<string | undefined> = ref()
-const lastName: Ref<string | undefined> = ref()
-const hourlyWage: Ref<string | undefined> = ref()
-const rangeSelect: Ref<string | undefined> = ref()
-const departmentSelect: Ref<string | undefined> = ref()
-const motive: Ref<string | undefined> = ref()
+import Swal from 'sweetalert2'
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+// Declaración de los datos del formulario y otras variables necesarias
+const name = ref<string | undefined>('')
+const curp = ref<string | undefined>('')
+const rfc = ref<string | undefined>('')
+const imss = ref<string | undefined>('')
+const lastName = ref<string | undefined>('')
+const hourlyWage = ref<string | undefined>('')
+const rangeSelect = ref<string | undefined>('')
+const departmentSelect = ref<string | undefined>('')
 const emits = defineEmits(['closeDialog'])
-let form: Ref<Employee> = ref({
-    name: name.value,
-    lastName: lastName.value,
-    curp: curp.value,
-    rfc: rfc.value,
-    imss: imss.value,
-    range: rangeSelect.value,
-    department: departmentSelect.value,
-    hourlyWage: motive.value,
-})
 
-async function submit(){
-    let response: any;
-    console.log('Form values')
-    form.value = {
-        name: name.value!,
-        lastName: lastName.value,
+// Función para enviar los datos del formulario
+async function submit() {
+    const employeeData = {
+        name: name.value,
         curp: curp.value,
         rfc: rfc.value,
         imss: imss.value,
+        lastName: lastName.value,
+        hourlyWage: hourlyWage.value,
         range: rangeSelect.value,
-        department: departmentSelect.value,
-        hourlyWage: motive.value,
+        department: departmentSelect.value
     }
-    console.log(form.value);
-    closeDialog();
+    
     try {
-        response = await setEmployeeInfo(form.value);
-        console.log(response);
+        const response = await setEmployeeInfo(employeeData)
         Swal.fire({
             title: 'Exito!',
             icon: 'success',
             confirmButtonText: 'Cool'
         })
+       
     } catch (error) {
-        console.log(error);
+        console.error('Error al crear el empleado:', error)
     }
-    return response;
-}
-function checkForm(){
 
+    closeDialog()
 }
+
 const closeDialog = () => {
-  // Emitir el evento al padre con los datos
-    emits('closeDialog', false);
-};
+    emits('closeDialog', false)
+}
 </script>
 <template>
     <div class="container">
@@ -201,6 +185,7 @@ const closeDialog = () => {
                         variant="outlined"
                     ></v-text-field>
                 </div>
+                
                 <div class="btn-wrapper">
                     <button class="submit-pill px-8 py-1 rounded text-white">
                         Enviar Solicitud
