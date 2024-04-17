@@ -3,13 +3,21 @@ import { ref, onMounted } from 'vue'
 import EmployeesForm from './forms/EmployeesForm.vue'
 import { getAllEmployees } from '@/services/FirestoreFunctions'
 import { deleteEmployeeById } from '@/services/FirestoreFunctions';
+import Swal from 'sweetalert2'
+
 function deleteEmployee(id: string) {
-  const confirmation = confirm('¿Estás seguro de que quieres eliminar este empleado?');
+  const confirmation = confirm();
   if (confirmation) {
     deleteEmployeeById(id)
       .then((success) => {
         if (success) {
-          console.log('Empleado eliminado correctamente');
+          Swal.fire({
+            title: 'Exito!',
+            icon: 'success',
+            confirmButtonText: 'Cool'
+            
+        })
+        reloadData(true)
         } else {
           console.error('Error al eliminar empleado');
         }
@@ -113,10 +121,7 @@ async function reloadData(event: any){
         >
           <template v-slot:item.actions="{ item }">
             <div class="actions">
-              <button class="btn-edit" click="editItem(item)">
-                <ion-icon name="eye-outline"></ion-icon>
-              </button>
-              <button class="btn-edit" click="editItem(item)">
+              <button class="btn-edit" @click="editItem(item.id)">
                 <ion-icon name="pencil-outline"></ion-icon>
               </button>
               <button class="btn-delete" @click="deleteEmployee(item.id)">
