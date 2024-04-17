@@ -116,7 +116,7 @@ async function reloadData(event: any){
               <button class="btn-edit" click="editItem(item)">
                 <ion-icon name="eye-outline"></ion-icon>
               </button>
-              <button class="btn-edit" click="editItem(item)">
+              <button class="btn-edit" @click="editItem(item.id)">
                 <ion-icon name="pencil-outline"></ion-icon>
               </button>
               <button class="btn-delete" @click="deleteEmployee(item.id)">
