@@ -12,9 +12,10 @@ function deleteEmployee(id: string) {
       .then((success) => {
         if (success) {
           Swal.fire({
-            title: 'Exito!',
+            title: 'Eliminado',
+            text: 'Se elimino el empleado correctamente!',
             icon: 'success',
-            confirmButtonText: 'Cool'
+            confirmButtonText: 'Ok'
             
         })
         reloadData(true)
@@ -70,6 +71,7 @@ function getColor(range: any) {
 
 function closeDialog() {
   dialog.value = false
+  reloadData(true)
 }
 async function reloadData(event: any){
   if(event){
